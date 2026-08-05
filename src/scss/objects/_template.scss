@@ -1,0 +1,10 @@
+// _template.scss
+.template {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+.main {
+  width: 100%;       // Ocupa todo el ancho de la celda
+  min-width: 0;      // Evita desbordamientos
+  box-sizing: border-box;
+}

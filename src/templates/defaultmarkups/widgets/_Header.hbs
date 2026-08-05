@@ -1,0 +1,39 @@
+{{!--
+Content of the widget Header
+@author zkreations
+@property {string} data:imagePlacement - Image placement (BEHIND, REPLACE, BEFORE_DESCRIPTION)
+@see https://bloggercode.orbiona.com/2019/05/widget-header.html
+--}}
+<b:includable id='widget:Header'>
+  <b:if cond='data:widget.sectionId != "header"'>
+    <data:messages.theresNothingHere/>
+  <b:else/>
+    <b:attr name='class' value='header-wrapper'/>
+    <div class='container'>
+      {{!-- If image exists --}}
+      <b:if cond='data:image'>
+        <a class="header-logo" expr:href='data:blog.homepageUrl'>
+          <img expr:alt='data:title' expr:height='data:height' expr:src='data:image' expr:width='data:width'/>
+        </a>
+      </b:if>
+      {{!-- If imagePlacement is "BEHIND" --}}
+      <b:if cond='data:imagePlacement == "BEHIND"'>
+        <div class="header-title">
+          <a expr:href='data:blog.homepageUrl'>
+            <data:title/>
+          </a>
+        </div>
+      </b:if>
+      {{!-- If description exists and imagePlacement is not "REPLACE" --}}
+      <b:if cond='data:description and data:imagePlacement != "REPLACE"'>
+        <div class="header-subtitle">
+          <data:description/>
+        </div>
+      </b:if>
+    </div>
+    {{!-- Switch search --}}
+    <label class='header-search switch' for='show-search'>
+      {{> Meteor.svg icon="search"}}
+    </label>
+  </b:if>
+</b:includable>

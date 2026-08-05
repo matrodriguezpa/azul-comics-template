@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html>
+<b:include name='rootAttributes' />
+
+<head>
+  <title>
+    <data:view.title.escaped />
+  </title>
+  <b:include name='headContent' />
+  <b:if cond="!data:view.isLayoutMode">
+    {{> skin}}
+    <b:else />
+    {{> template-skin}}
+  </b:if>
+  {{> defaultmarkups}}
+</head>
+
+<body>
+  <b:include name='@kind' />
+  <b:tag name='div' cond='data:view.isLayoutMode and data:skin.vars.a_layoutEdit' class='layout-edit'>
+    <b:tag cond='data:view.isLayoutMode' name='div' class='layout-section'>
+      {{> header}}
+    </b:tag>
+    <div class='template layout-section'>
+      <div class='container'>
+        {{> left-sidebar}}
+        {{> main}}
+        {{> right-sidebar}}
+      </div>
+    </div>
+    <div class='template layout-section'>
+        {{> footer}}
+    </div>
+  </b:tag>
+</body>
+
+</html>

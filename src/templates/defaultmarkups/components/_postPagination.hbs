@@ -1,0 +1,18 @@
+{{!--
+Module for creating pagination
+@author zkreations
+--}}
+<b:includable id='post:pagination'>
+  <b:tag class='blog-pager' id='blog-pager' cond='data:newerPageUrl or data:olderPageUrl' name='div'>
+    <b:if cond='data:newerPageUrl'>
+      <a class='pager-button' expr:href='data:newerPageUrl' expr:aria-label='data:messages.newerPosts' rel='nofollow'>
+        {{> Meteor.svg icon="move-left"}}
+      </a>
+    </b:if>
+    <b:if cond='data:olderPageUrl'>
+      <a class='pager-button' expr:href='data:olderPageUrl' expr:aria-label='data:messages.olderPosts' rel='nofollow'>
+        {{> Meteor.svg icon="move-right"}}
+      </a>
+    </b:if>
+  </b:tag>
+</b:includable>

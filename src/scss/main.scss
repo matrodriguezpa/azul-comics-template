@@ -1,0 +1,32 @@
+// 1. Settings: Global variables and configurations
+@use 'settings/root';
+
+// 2. Generic: Resets and base styles
+@use 'generic/reset';
+@use 'generic/overrides';
+
+// 3. Elements: Styles for native HTML elements
+@use 'elements/base';
+
+// 4. Objects: Layout patterns and structure
+@use 'objects/container';
+@use 'objects/template';
+
+// 5. Components: UI components
+@use 'components/buttons';
+@use 'components/cards';
+@use 'components/comments';
+@use 'components/footer';
+@use 'components/form';
+@use 'components/header';
+@use 'components/icons';
+@use 'components/message';
+@use 'components/pagination';
+@use 'components/posts';
+@use 'components/searchbox';
+@use 'components/sidebar';
+@use 'components/switch';
+@use 'components/widgets';
+
+// 6. Utilities: Utility classes and helpers
+@use 'utilities/text';

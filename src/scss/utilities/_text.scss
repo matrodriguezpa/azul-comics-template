@@ -1,0 +1,19 @@
+@use "../settings/variables";
+
+@each $value in variables.$text-align {
+  .text-#{$value} {
+    text-align: $value;
+  }
+}
+
+@each $value in variables.$text-transform {
+  .#{$value} {
+    text-transform: $value;
+  }
+}
+
+@each $size, $value in variables.$font-sizes {
+  .fs-#{$size} {
+    font-size: $value;
+  }
+}

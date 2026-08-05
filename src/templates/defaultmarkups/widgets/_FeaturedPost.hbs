@@ -1,0 +1,16 @@
+{{!--
+Content of the widget FeaturedPost
+@author zkreations
+@property {string} data:show.share - Share buttons
+@property {string} data:show.author - Author profile
+@property {string} data:show.timestamp - Publish date
+@property {string} data:show.comments - Comments
+@property {string} data:show.labels - Labels
+@property {string} data:show.icons - Email send button
+@see https://bloggercode.orbiona.com/2019/05/widget-featuredPost.html
+--}}
+<b:includable id='widget:FeaturedPost'>
+  <b:with value='data:widgets.Blog1.allBylineItems' var='show'>
+    <b:include name='post:card'/>
+  </b:with>
+</b:includable>

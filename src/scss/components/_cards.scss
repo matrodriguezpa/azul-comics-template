@@ -1,0 +1,55 @@
+// Container for the cards
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+}
+
+// Individual card
+.card {
+  background-color: var(--bg-post);
+
+  // Content of the card
+  &-content {
+    position: relative;
+    display: block;
+
+    // Style for the card if it has an image
+    &.has-image {
+      --card-body-bg: linear-gradient(to bottom, transparent 25%, rgb(0 0 0 / 75%) 100%);
+      --color-title: #fff;
+      --color-text: #fff;
+    }
+  }
+
+  &-image {
+    position: absolute;
+    object-fit: cover;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  &-meta {
+    padding: 3rem;
+    background: var(--card-body-bg, transparent);
+    aspect-ratio: 9/10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+  }
+
+  &-title {
+    font-family: var(--font-title-family);
+    color: var(--color-title);
+    font-size: 1.45rem;
+    font-weight: 800;
+  }
+
+  &-snippet {
+    color: var(--color-text);
+    margin-top: 1rem;
+    opacity: .75;
+  }
+}

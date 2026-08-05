@@ -1,0 +1,44 @@
+{{!--
+b:skin content (for Customization Mode)
+@author zkreations
+@see https://bloggercode.orbiona.com/2014/06/tag-b-skin-b-template-skin.html
+--}}
+<b:skin version='{{version}}'><![CDATA[
+  /*!
+    * Name      : {{name}}
+    * Version   : {{version}}
+    * License   : {{license}}
+    *//*!
+
+  Admin
+  =====================
+  {{> setting-admin}}
+
+  General
+  =====================
+  {{> setting-general}}
+
+  Translatable strings
+  =====================
+  {{> setting-text}}
+
+  Customization
+  =====================
+  {{> folder.customization}}
+
+  Skin CSS variables
+  =====================*/
+  :root {
+    {{> hamlet.skinVars}}
+  }
+
+  /*
+  All styles
+  =====================*/
+  {{asset '/dist/css/main.css'}}
+  {{asset '~/@zkreations/typography/main.css'}}
+
+  /*
+  Your custom styles
+  =====================*/
+]]></b:skin>

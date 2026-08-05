@@ -1,0 +1,27 @@
+{{!--
+Default markups for all widgets
+@author zkreations
+@see https://bloggercode.orbiona.com/2017/05/tag-b-defaultmarkups.html
+@see https://github.com/zkreations/hamlet-builder/blob/main/src/README.md
+--}}
+<b:defaultmarkups>
+  {{!-- Clean all inclusions of all widgets automatically  --}}
+  {{> hamlet.defaultmarkups}}
+  <b:defaultmarkup type='Common'>
+    {{> hamlet.functions}}
+    {{> folder.components}}
+    {{> folder.widgets}}
+  </b:defaultmarkup>
+  {{!-- Add default markups for all widgets --}}
+  <b:defaultmarkup type='All'>
+    <b:includable id='main' var='this'>
+      <b:include name='widget-title'/>
+      <b:include name='content'/>
+    </b:includable>
+    <b:includable id='content'>
+      <div class='widget-content'>
+        <b:include expr:name='"widget:" + data:widget.type'/>
+      </div>
+    </b:includable>
+  </b:defaultmarkup>
+</b:defaultmarkups>

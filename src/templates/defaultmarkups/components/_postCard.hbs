@@ -1,0 +1,43 @@
+{{!--
+Module for creating a post card
+@author zkreations
+@param {array} [items=data:posts] - Array of posts
+--}}
+<b:includable id='post:card'>
+  <b:loop index='i' values='data:items ?: data:posts' var='post'>
+    <article class='card'>
+      <a class='card-content' expr:href='data:post.url.canonical'>
+        {{!-- If the post has a featured image, display it --}}
+        <b:if cond='data:post.featuredImage'>
+          {{!-- Check if featured image is a YouTube video --}}
+          <b:with value='data:post.featuredImage.isYoutube' var='isYoutube'>
+            <b:class name='has-image'/>
+            <b:include name='@image' data='{
+                class: "card-image",
+                src: data:post.featuredImage,
+                resize: (data:isYoutube ? 600 : 420),
+                ratio: (data:isYoutube ? "16:9" : "4:3"),
+                params: data:skin.vars.c_imageParams,
+                loading: (data:i gt 2 ? "lazy" : ""),
+                fetchpriority: (data:i lt 3 ? "high" : ""),
+                alt: data:post.title.escaped
+              }'/>
+          </b:with>
+        </b:if>
+        <div class="card-meta">
+          {{!-- If title is empty, display "No title" --}}
+          <h2 class='card-title'>
+            <b:eval expr='data:post.title.escaped != "" ? data:post.title.escaped : data:messages.noTitle'/>
+          </h2>
+          {{!-- Include post snippet --}}
+          <b:include name='@snippet' data='{
+              text: data:post.snippets.long,
+              class: "card-snippet"
+            }'/>
+        </div>
+      </a>
+    </article>
+    {{!-- Show inline ad --}}
+    <b:include name='post:inlineAd'/>
+  </b:loop>
+</b:includable>

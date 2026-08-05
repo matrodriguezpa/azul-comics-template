@@ -1,0 +1,30 @@
+{{!--
+Module for generating posts view (isPost, isPage)
+@author zkreations
+--}}
+<b:includable id='post:view'>
+  {{!-- Post header --}}
+  <header class='post-header'>
+    <h1 class='post-title'><data:post.title.escaped/></h1>
+    <b:if cond='data:view.isPost'>
+      <span class='post-date'><data:post.date/></span>
+    </b:if>
+  </header>
+  {{!-- Post body --}}
+  <section class='post-body typography'>
+    <b:include name='post:ads1'/>
+    <data:post.body/>
+    <b:include name='post:ads2'/>
+  </section>
+  {{!-- Post footer --}}
+  <footer class='post-comment'>
+    <b:include name='comment:main' data='{
+        depth: 2,
+        texts: {
+          delete: data:skin.vars.t_delete,
+          reply: data:skin.vars.t_reply
+        }
+      }'/>
+  </footer>
+  <b:include name="postMetadataJSON"/>
+</b:includable>

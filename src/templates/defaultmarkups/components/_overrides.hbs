@@ -1,0 +1,38 @@
+{{!--
+Remplace widget-title
+@author zkreations
+@see https://bloggercode.orbiona.com/1991/08/XML-renderer-widget-title.html
+--}}
+<b:includable id='widget-title'>
+  <b:include name='@attr' data='{["id"],["data-version"]}'/>
+  <b:class expr:name='data:widget.instanceId'/>
+  {{!-- Only for widgets that require a title --}}
+  <b:if cond='["AdSense","Header","Blog"] contains data:widget.type'>
+    <b:comment>This widget does not require a title</b:comment>
+  <b:elseif cond='["header"] contains data:widget.sectionId'/>
+    <b:comment>This section does not require a title</b:comment>
+  <b:elseif cond='data:defaultTitle or data:title.length != 0'/>
+    <div class='widget-title'>
+      <span class='widget-name'>
+        <b:eval expr='data:defaultTitle ?: data:title'/>
+      </span>
+    </div>
+  </b:if>
+</b:includable>
+{{!--
+Remplace noContentPlaceholder
+@author zkreations
+@see https://bloggercode.orbiona.com/1992/07/XML-renderer-noContentPlaceholder.html
+--}}
+<b:includable id='noContentPlaceholder'>
+  <b:if cond='data:posts.empty'>
+    <div class="message">
+      <b:if cond='data:view.isError'>
+        <b:class name='error'/>
+        <data:this.navMessage/>
+        <b:else/>
+        <b:eval expr='data:view.search.query ? data:messages.noResultsFound : data:this.navMessage'/>
+      </b:if>
+    </div>
+  </b:if>
+</b:includable>
