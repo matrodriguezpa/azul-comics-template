@@ -1,6 +1,8 @@
 .widget {
+  margin-bottom: 1rem;
+
   &-title {
-    margin-bottom: 1rem;
+    //margin-bottom: 1rem;
     font-weight: 500;
   }
 }
@@ -24,7 +26,8 @@
     font-size: 1.125rem;
     color: var(--color-text);
 
-    &:hover, &.is-here {
+    &:hover,
+    &.is-here {
       color: var(--primary);
     }
   }
@@ -33,17 +36,39 @@
 // Widget: Label
 .labels {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: .25rem;
+  width: 100%;
 
   &-link {
-    color: var(--color-text);
-    text-transform: capitalize;
-    padding: .5rem;
-    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    &:hover, &.is-here {
-      border-color: var(--primary);
+    width: 100%;
+    min-height: 40px;
+    box-sizing: border-box;
+
+    padding: .65rem .8rem;
+
+    background-color: #f1f1f1;
+    border: 0;
+    border-radius: 0;
+
+    color: #444;
+    font-size: .75rem;
+    font-weight: 400;
+    text-transform: none;
+    text-decoration: none;
+
+    transition:
+      background-color var(--transition-config),
+      color var(--transition-config);
+
+    &:hover,
+    &.is-here {
+      background-color: #e8e8e8;
+      border-color: transparent;
       color: var(--primary);
     }
   }
@@ -106,5 +131,15 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+  }
+}
+
+.links-link {
+  margin: 0 .2rem;
+}
+
+.links {
+  &-social {
+    display: flex;
   }
 }

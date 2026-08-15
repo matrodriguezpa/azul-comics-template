@@ -1,38 +1,57 @@
 .header {
-  padding: 7.5rem 0;
-  text-align: center;
-  background-size: cover;
-  background-color: var(--body-background-color);
+  padding: 1rem 0;
+  background: var(--bg-header);
 
-  &-logo {
+  .section {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 2rem;
   }
 
-  &-title {
+  // Widget Header
+  .Header {
+    flex: 1;
+  }
+
+  .header-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-title {
+    margin: 0;
     font-size: 1.75rem;
+    line-height: 1;
+    font-family: var(--font-blog-title);
 
     a {
-      color: var(--color-header-title)
+      color: var(--color-header-title);
+      text-decoration: none;
     }
   }
 
-  &-subtitle {
-    font-size: 1.25rem;
-    color: var(--color-header-subtitle)
+  .header-subtitle {
+    margin-top: .75rem;
+    font-size: 1rem;
+    line-height: 1.2;
+    color: var(--color-header-subtitle);
+    font-family: var(--font-blog-title);
   }
 
-  &-bars {
+  // Menú
+  .header-bars {
     left: 2rem;
 
-    // See _switch.scss
     &::before {
       pointer-events: var(--switch-bars, none);
       opacity: var(--switch-bars, 0);
     }
   }
 
-  &-search {
+  // Buscador
+  .header-search {
     right: 2rem;
 
     &::before {
@@ -41,12 +60,8 @@
     }
   }
 
-  // No auto ads on header
+  // No auto ads
   .google-auto-placed {
-    display: none !important
+    display: none !important;
   }
-}
-
-:where(.header) {
-  background: var(--body-background);
 }

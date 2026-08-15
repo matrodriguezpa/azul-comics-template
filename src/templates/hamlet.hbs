@@ -23,14 +23,17 @@
       {{> header}}
     </b:tag>
     <div class='template layout-section'>
-      <div class='container'>
-        {{> left-sidebar}}
+      <div class='container-slideshow'>
+        {{> slideshow}}
+      </div>
+      <div class='container-main hide-left'>
+        <!-- {{> left-sidebar}} -->
         {{> main}}
         {{> right-sidebar}}
       </div>
     </div>
     <div class='template layout-section'>
-        {{> footer}}
+      {{> footer}}
     </div>
   </b:tag>
 </body>

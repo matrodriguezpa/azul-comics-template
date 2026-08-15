@@ -1,36 +1,27 @@
-.searchbox {
-  // See _switch.scss
-  pointer-events: var(--switch-search, none);
-  opacity: var(--switch-search, 0);
-
-  // Searchbox Styles
-  transform: translate(-50%, var(--switch-search-position,0%));
-  transition: opacity var(--transition-config), transform var(--transition-config);
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 10;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  width: 100%;
-  max-width: 500px;
-
+.search {
   &-input {
-    padding: 1rem 0;
-    font-size: 1.25rem;
-    width: 100%;
-    background-color: transparent;
-    color: #fff;
-    border-bottom: 2px solid;
-    transition: border-color var(--transition-config);
+    padding: .7rem .8rem;
+
+    background-color: #f1f1f1;
+    color: #444;
+
+    border: 1px solid #ddd;
+    border-radius: 2px;
+
+    transition:
+      background-color var(--transition-config),
+      border-color var(--transition-config),
+      color var(--transition-config);
 
     &::placeholder {
-      color: #fff;
+      color: #888;
     }
 
     &:focus {
       outline: none;
-      border-color: var(--primary);
+
+      background-color: #e9e9e9;
+      border-color: #ccc;
     }
   }
 }

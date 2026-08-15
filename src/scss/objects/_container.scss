@@ -1,28 +1,42 @@
 // _container.scss
 .container {
-  display: grid;
-  grid-template-columns: var(--sidebar-width, 250px) 1fr var(--sidebar-width, 250px);
-  gap: var(--grid-gap, 1rem); // Espacio entre columnas (opcional)
-  max-width: var(--container, 1200px);
-  margin: 0 auto;
-  padding: 0 2rem;
 
-  // Ocultar sidebar izquierda
-  &.hide-left {
-    grid-template-columns: 0 1fr var(--sidebar-width, 250px);
+  &-slideshow {
+        display: grid;
+
+    max-width: var(--slide-container, 1200px);
+    margin: 0 auto;
+    padding: 0 2rem;
+    grid-template-columns: 1fr var(--card-width);
   }
 
-  // Ocultar sidebar derecha
-  &.hide-right {
-    grid-template-columns: var(--sidebar-width, 250px) 1fr 0;
-  }
+  &-main {
+    display: grid;
+    gap: var(--grid-gap, 1rem); // Espacio entre columnas (opcional)
+    max-width: var(--main-container, 1200px);
+    margin: 0 auto;
+    padding: 0 2rem;
 
-  // Ocultar ambas
-  &.hide-both {
-    grid-template-columns: 0 1fr 0;
-  }
+    grid-template-columns: var(--sidebar-width) 1fr var(--sidebar-width);
 
-  // Si se prefiere un enfoque con clases en los elementos hijos,
-  // también se puede usar la siguiente alternativa (comentada)
-  // pero la solución con clases en el contenedor es más limpia.
+    // Ocultar sidebar izquierda
+    &.hide-left {
+      grid-template-columns: 1fr var(--sidebar-width, 250px);
+    }
+
+    // Ocultar sidebar derecha
+    &.hide-right {
+      grid-template-columns: var(--sidebar-width, 250px) 1fr;
+    }
+
+    // Ocultar ambas
+    &.hide-both {
+      grid-template-columns: 1fr;
+    }
+
+    // Si se prefiere un enfoque con clases en los elementos hijos,
+    // también se puede usar la siguiente alternativa (comentada)
+    // pero la solución con clases en el contenedor es más limpia.
+    
+  }
 }

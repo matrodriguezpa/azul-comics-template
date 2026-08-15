@@ -4,13 +4,31 @@ Content of the widget LinkList
 @see https://bloggercode.orbiona.com/2019/04/widget-linkList.html
 --}}
 <b:includable id='widget:LinkList'>
-  <div class='links'>
-    {{!-- If the widget is in the header section, add the class 'links-header' --}}
-    <b:class cond='data:widget.sectionId == "header"' name='links-header'/>
+  <b:class cond='data:widget.sectionId == "header"' name='links-header' />
+
+  <div class="links">
     <b:loop values='data:links' var='link'>
       <a class='links-link' expr:href='data:link.target'>
-        <data:link.name/>
+        <data:link.name />
       </a>
     </b:loop>
+  </div>
+
+  <div class='links-social'>
+    <a class="links-link" href="https://www.instagram.com/azulcomics/" target="_blank">
+      {{> Meteor.svg icon="instagram"}}
+    </a>
+
+    <a class="links-link" href="https://www.facebook.com/azulcomics/" target="_blank">
+      {{> Meteor.svg icon="facebook"}}
+    </a>
+
+    <a class="links-link" href="https://twitter.com/azul_comics" target="_blank">
+      {{> Meteor.svg icon="twitter"}}
+    </a>
+
+    <a class="links-link" href="https://discord.com/invite/cPxcYRuxtc" target="_blank">
+      {{> Meteor.svg icon="discord"}}
+    </a>
   </div>
 </b:includable>

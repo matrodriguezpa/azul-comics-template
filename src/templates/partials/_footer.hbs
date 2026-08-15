@@ -5,9 +5,12 @@ Partial: Footer content
 <footer class='footer'>
   <div class='footer-wrapper'>
     <b:section id='footer'>
-      <b:widget type='Text' locked='false' />
+      <b:widget type='PageList' locked='false' />
+      <b:widget type='LinkList' locked='false' />
     </b:section>
-    © {{currentYear}}
-    <data:blog.title />
+    <div class='copyright'>
+      © {{currentYear}}
+      <data:blog.title />
+    </div>
   </div>
 </footer>

@@ -2,8 +2,9 @@
 .left-sidebar,
 .right-sidebar {
   // Las sidebars son simplemente celdas del grid; su ancho lo dicta grid-template-columns
-  background-color: var(--bg-sidebar, #f5f5f5);
-  padding: var(--sidebar-gap, 1rem);
+  background-color: var(--bg-sidebar, #ffffff);
+  border-radius: 15px;
+  padding: var(--sidebar-gap, .5rem);
   overflow-y: auto;
   min-height: 100%; // Para que ocupen toda la altura del contenedor si se desea
 

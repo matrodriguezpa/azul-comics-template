@@ -22,7 +22,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@meteor-icons/hamlet": "^4.0.4",
+    "@meteor-icons/hamlet": "^4.3.0",
     "@zkreations/typography": "^1.0.1",
     "blogger-admin-wp": "^1.0.1",
     "hamlet": "^0.3.3",
