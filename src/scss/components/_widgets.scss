@@ -4,6 +4,7 @@
   &-title {
     //margin-bottom: 1rem;
     font-weight: 500;
+    font-family: var(--font-title-family);
   }
 }
 
@@ -36,7 +37,7 @@
 // Widget: Label
 .labels {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: .25rem;
   width: 100%;
 
@@ -45,7 +46,6 @@
     align-items: center;
     justify-content: space-between;
 
-    width: 100%;
     min-height: 40px;
     box-sizing: border-box;
 
@@ -142,4 +142,15 @@
   &-social {
     display: flex;
   }
+}
+
+.links-social{
+  display: flex;
+  justify-content: center;
+}
+
+.copyright {
+  font-size: .75rem;
+  color: white;
+  margin-top: 1rem;
 }

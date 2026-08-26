@@ -1,22 +1,77 @@
-{{!--
-Content of the widget PageList
-@author zkreations
-@see https://bloggercode.orbiona.com/2019/04/widget-pageList.html
---}}
 <b:includable id='widget:PageList'>
   <div class='pages'>
-    {{!-- If the widget is in the header section, add the class 'pages-header' --}}
-    <b:class cond='data:widget.sectionId == "header"' name='pages-header'/>
-    <b:loop values='data:links' var='link'>
-      <a class='pages-link' expr:href='data:link.href'>
-        {{!-- If the link is the current page, add the class 'is-here' --}}
-        <b:class cond='data:link.isCurrentPage' name='is-here'/>
-        <b:if cond='data:link.href contains "?ref="'>
-          <b:attr name='target' value='_blank'/>
-          <b:attr name='rel' value='noopener noreferrer nofollow'/>
-        </b:if>
-        <data:link.title/>
-      </a>
-    </b:loop>
+    {{!-- Si el widget está en la cabecera, añadimos la clase 'pages-header' --}}
+    <b:class cond='data:widget.sectionId == "header"' name='pages-header' />
+
+    <b:if cond='data:widget.sectionId == "slideshow" or data:widget.sectionId == "blogposts"'>
+      {{!-- Páginas de comics y/o novedades --}}
+      <div class='posts-container'>
+        <b:loop values='data:links' var='link'>
+          <div class='card-slider'>
+            <a class='pages-link' expr:href='data:link.href'>
+              <b:class cond='data:link.isCurrentPage' name='is-here' />
+              <b:if cond='data:link.href contains "?ref="'>
+                <b:attr name='target' value='_blank' />
+                <b:attr name='rel' value='noopener noreferrer nofollow' />
+              </b:if>
+              <h1 class='card-slide-title'>
+                <data:link.title />
+              </h1>
+            </a>
+          </div>
+        </b:loop>
+      </div>
+      <script>
+        /*<![CDATA[*/
+        {{asset '/dist/js/slideshow.min.js'}}
+        /*]]>*/
+      </script>
+
+    <b:elseif cond='data:widget.sectionId == "latest" 
+      or data:widget.sectionId == "manga" 
+      or data:widget.sectionId == "comic" 
+      or data:widget.sectionId == "one-shot" 
+      or data:widget.sectionId == "novel" 
+      or data:widget.sectionId == "webtoon"' />
+      {{!-- Entradas recientes --}}
+      <div class='latest-posts'>
+        <div class='latest-cards'></div>
+        <button class='latest-more' type='button'>Ver más</button>
+      </div>
+      <script>
+        /*<![CDATA[*/
+        {{asset '/dist/js/latest_posts.min.js'}}
+        /*]]>*/
+      </script>
+
+    <b:elseif cond='data:widget.sectionId == "chapter-list" and data:blog.pageType == "static_page"' />
+  <div class='chapter-list'>
+    <div class='chapter-controls'>
+      <button class='chapter-first' type='button'>Primera publicación</button>
+      <button class='chapter-latest' type='button'>Última publicación</button>
+      <button class='chapter-sort' type='button'>Orden: más recientes</button>
+    </div>
+    <div class='chapter-cards'></div>
+    <button class='chapter-more' type='button'>Ver más</button>
+  </div>
+  <script>
+    /*<![CDATA[*/
+    {{asset '/dist/js/latest_chapters.min.js'}}
+    /*]]>*/
+  </script>
+
+    <b:else />
+      {{!-- Cualquier otro PageList (p. ej. el menú de cabecera): lista normal, sin tarjetas --}}
+      <b:loop values='data:links' var='link'>
+        <a class='pages-link' expr:href='data:link.href'>
+          <b:class cond='data:link.isCurrentPage' name='is-here' />
+          <b:if cond='data:link.href contains "?ref="'>
+            <b:attr name='target' value='_blank' />
+            <b:attr name='rel' value='noopener noreferrer nofollow' />
+          </b:if>
+          <data:link.title />
+        </a>
+      </b:loop>
+    </b:if>
   </div>
 </b:includable>

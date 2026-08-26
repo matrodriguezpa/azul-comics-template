@@ -1,27 +1,20 @@
 .search {
   &-input {
-    padding: .7rem .8rem;
-
-    background-color: #f1f1f1;
-    color: #444;
-
-    border: 1px solid #ddd;
-    border-radius: 2px;
-
-    transition:
-      background-color var(--transition-config),
-      border-color var(--transition-config),
-      color var(--transition-config);
+    color: white;
+    background-color: #ffffff7d;
+    border: none;
+    border-radius: 15px;
+    transition: background-color var(--transition-config), border-color var(--transition-config), color var(--transition-config);
 
     &::placeholder {
-      color: #888;
+      color: white;
     }
 
     &:focus {
       outline: none;
 
-      background-color: #e9e9e9;
-      border-color: #ccc;
+      background-color: #86bef3;
+      border-color: #210097;
     }
   }
 }

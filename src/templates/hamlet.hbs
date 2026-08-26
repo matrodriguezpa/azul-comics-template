@@ -23,14 +23,26 @@
       {{> header}}
     </b:tag>
     <div class='template layout-section'>
-      <div class='container-slideshow'>
-        {{> slideshow}}
-      </div>
-      <div class='container-main hide-left'>
+      <b:if cond='data:blog.url == data:blog.homepageUrl'>
+        <div class='container-slideshow'>
+          {{> slideshow}}
+        </div>
+      </b:if>
+
+      <!-- Contenedor principal con clase condicional -->
+      <div class='container-main'>
+        <!-- Añade la clase según el tipo de página -->
+        <b:if cond='data:blog.pageType == "static_page" or data:view.isPost'>
+          <b:class name='hide-both' />
+          <b:else />
+          <b:class name='hide-left' />
+        </b:if>
+
         <!-- {{> left-sidebar}} -->
         {{> main}}
         {{> right-sidebar}}
       </div>
+
     </div>
     <div class='template layout-section'>
       {{> footer}}

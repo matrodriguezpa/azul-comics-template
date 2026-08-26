@@ -1,3 +1,7 @@
+.posts-container {
+  display: flex;
+}
+
 // Container for the cards
 .cards {
   display: grid;
@@ -8,6 +12,8 @@
 // Individual card
 .card {
   background-color: var(--bg-post);
+    border-radius: 15px;
+    overflow: hidden;
 
   // Content of the card
   &-content {
@@ -33,7 +39,7 @@
   &-meta {
     padding: 3rem;
     background: var(--card-body-bg, transparent);
-    aspect-ratio: 9/10;
+    aspect-ratio: 2/3;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -51,5 +57,272 @@
     color: var(--color-text);
     margin-top: 1rem;
     opacity: .75;
+  }
+
+  &-slider {
+    position: relative;
+    background: #111;
+    border-radius: 14px;
+    width: 18vw;
+    height: 28vw;
+    overflow: hidden;
+    transition: transform 0.3s ease, filter 0.3s ease;
+
+    &:hover {
+      transform: scale(1.06);
+      filter: brightness(0.85);
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+  }
+
+
+
+  &-slide-title {
+    position: absolute;
+    bottom: 0;
+    z-index: 10;
+    width: 100%;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 2px 4px #000;
+    pointer-events: none;
+  }
+}
+
+
+/* Contenedor de tarjetas */
+.latest-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* Tarjeta individual */
+.latest-card {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Enlace superpuesto que cubre toda la tarjeta */
+.latest-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Imagen */
+.latest-card-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Título */
+.latest-card-title {
+  padding: 0.5rem;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Botón de etiqueta (por encima del overlay) */
+.latest-card-tag {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  margin: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: #e0e0e0;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+}
+
+/* Botón "Ver más" */
+.latest-more {
+  display: block;
+  margin: 1rem auto;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.latest-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.latest-card-tag {
+  background: #f0f0f0;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: #333;
+}
+
+.latest-card-tag:hover {
+  background: #ddd;
+}
+
+.posts-container {
+  gap: 12px;
+  width: 100%;
+  display: flex;
+}
+
+.chapter-list {}
+
+.chapter-cards {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  display: grid;
+}
+
+.chapter-card {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.chapter-card:hover {
+  transform: translateY(-4px);
+}
+
+.chapter-card-link {
+  display: block;
+  text-decoration: none;
+  color: var(--color-title);
+}
+
+.chapter-card-image {
+  aspect-ratio: 6/9;
+  object-fit: cover;
+  width: 100%;
+}
+
+.chapter-card-title {
+  padding: 12px;
+  font-size: 0.95rem;
+  text-align: center;
+  margin: 0;
+  font-weight: 600;
+}
+
+.chapter-more {
+  display: block;
+  margin: 30px auto 0;
+  padding: 10px 30px;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.chapter-more:hover {
+  background: #1557b0;
+}
+
+.chapter-section-header {
+  grid-column: 1 / -1;
+  /* ocupa toda la fila del grid */
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 20px 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #ddd;
+  color: #333;
+}
+
+.chapter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.chapter-controls button {
+  padding: 8px 16px;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.chapter-controls button:hover {
+  background: #1557b0;
+}
+
+.chapter-section-header {
+  grid-column: 1 / -1;
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 20px 0 10px;
+  padding: 8px 12px;
+  background: #f0f0f0;
+  border-radius: 6px;
+  color: #333;
+}
+
+
+
+/* === LAYOUT PARA PÁGINAS ESTÁTICAS === */
+.main.has-chapter-list {
+  display: grid;
+  grid-template-columns: 25% 75%;
+  /* Content a la izquierda, chapter-list a la derecha */
+  gap: 30px;
+  align-items: start;
+  /* Para que ambas columnas comiencen desde arriba */
+}
+
+/* Ajustes para que #content y #chapter-list se comporten bien */
+.main.has-chapter-list #content,
+.main.has-chapter-list #chapter-list {
+  min-width: 0;
+  /* Evita desbordamientos */
+}
+
+/* Si quieres que #chapter-list ocupe todo el ancho disponible */
+.main.has-chapter-list #chapter-list {
+  width: 100%;
+}
+
+/* ===== RESPONSIVE: en móviles apilar las columnas ===== */
+@media screen and (max-width: 768px) {
+  .main.has-chapter-list {
+    grid-template-columns: 1fr;
+    /* Una sola columna */
+    gap: 20px;
+  }
+
+  /* Opcional: cambiar el orden para que content aparezca primero y luego chapter-list */
+  .main.has-chapter-list #content {
+    order: 1;
+  }
+
+  .main.has-chapter-list #chapter-list {
+    order: 2;
   }
 }

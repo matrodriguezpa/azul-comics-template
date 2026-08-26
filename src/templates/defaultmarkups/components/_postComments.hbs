@@ -13,13 +13,14 @@ Comment form
       <div id='comment-form'>
         <div class='comment-iframe'>
           {{!-- Added "skin" parameter to enable styling of the comment form. --}}
-          <iframe id='comment-editor' expr:src='data:post.commentFormIframeSrc params { skin: "emporio" }' height='66'/>
+          <iframe id='comment-editor' expr:src='data:post.commentFormIframeSrc params { skin: "emporio" }'
+            height='66' />
         </div>
       </div>
       {{!-- If comment message exists, show it --}}
       <b:if cond='data:this.messages.blogComment'>
         <div class='comment-messages'>
-          <data:this.messages.blogComment/>
+          <data:this.messages.blogComment />
         </div>
       </b:if>
       {{!-- Hack to avoid loading the script initially. --}}
@@ -28,21 +29,21 @@ Comment form
       </textarea>
       {{!-- button to restore the comment form --}}
       <button id='form-restore' class='comment-restore-button'>
-        <b:eval expr='data:texts.restore ?: data:messages.postAComment'/>
+        <b:eval expr='data:texts.restore ?: data:messages.postAComment' />
       </button>
       {{!-- Comment script --}}
       <script>
         /*<![CDATA[*/
-        {{#if development}}
-          {{asset '/dist/js/comments.js'}}
-        {{else}}
-          {{asset '/dist/js/comments.min.js'}}
-        {{/if}}/*]]>*/
+        { { #if development } }
+        { {asset '/dist/js/comments.js' } }
+        { {else } }
+        { {asset '/dist/js/comments.min.js' } }
+        { { /if}}/ *]]>*/
       </script>
-    <b:else/>
+      <b:else />
       {{!-- Else, show the message that comments are closed --}}
       <div class='comment-alert'>
-        <data:post.noNewCommentsText/>
+        <data:post.noNewCommentsText />
       </div>
     </b:if>
   </div>
@@ -56,15 +57,15 @@ Comment header
   <div class='comment-header'>
     {{!-- Avatar --}}
     <div class='comment-avatar'>
-      <b:include name='@avatar' data='{ src: data:comment.authorAvatarSrc, default: data:avatar }'/>
+      <b:include name='@avatar' data='{ src: data:comment.authorAvatarSrc, default: data:avatar }' />
     </div>
     {{!-- Meta --}}
     <div class='comment-meta'>
       {{!-- Create link to author or span if no link --}}
       <b:tag class='comment-author' expr:name='data:comment.authorUrl ? "a" : "span"'>
-        <b:attr name='href' expr:value='data:comment.authorUrl'/>
+        <b:attr name='href' expr:value='data:comment.authorUrl' />
         {{!-- Name --}}
-        <data:comment.author/>
+        <data:comment.author />
         {{!-- If post author, show badge --}}
         <b:if cond='data:comment.extraIconClass'>
           <span class='comment-badge'>
@@ -74,7 +75,7 @@ Comment header
       </b:tag>
       {{!-- Date --}}
       <span class='comment-time'>
-        <data:comment.timestamp/>
+        <data:comment.timestamp />
       </span>
     </div>
   </div>
@@ -86,8 +87,8 @@ Comment body
 <b:includable id='comment:body'>
   <div class='comment-content'>
     {{!-- If comment is deleted, add deleted class --}}
-    <b:class cond='data:comment.isDeleted' name='comment-deleted'/>
-    <data:comment.body/>
+    <b:class cond='data:comment.isDeleted' name='comment-deleted' />
+    <data:comment.body />
   </div>
 </b:includable>
 {{!--
@@ -101,13 +102,13 @@ Comment footer
     <b:if cond='data:hasDepth'>
       {{!-- parent-id is required for the script to work --}}
       <button class='comment-reply-button' expr:data-parent-id='data:comment.id'>
-        <b:eval expr='data:texts.reply ?: data:messages.postAComment'/>
+        <b:eval expr='data:texts.reply ?: data:messages.postAComment' />
       </button>
     </b:if>
     {{!-- Delete button--}}
     <span expr:class='data:comment.adminClass'>
       <a class='comment-delete-button' expr:href='data:comment.deleteUrl'>
-        <b:eval expr='data:texts.delete ?: data:messages.deleteComment'/>
+        <b:eval expr='data:texts.delete ?: data:messages.deleteComment' />
       </a>
     </span>
   </div>
@@ -120,15 +121,23 @@ Comment pagination
   <div class='comments-paging'>
     {{!-- Older links --}}
     <b:if cond='data:post.hasOlderLinks'>
-      <a expr:href='data:post.oldestLinkUrl'><data:messages.oldest/></a>
-      <a expr:href='data:post.olderLinkUrl'><data:messages.older/></a>
+      <a expr:href='data:post.oldestLinkUrl'>
+        <data:messages.oldest />
+      </a>
+      <a expr:href='data:post.olderLinkUrl'>
+        <data:messages.older />
+      </a>
     </b:if>
     {{!-- Range of paging --}}
-    <data:post.commentRangeText/>
+    <data:post.commentRangeText />
     {{!-- Newer links --}}
     <b:if cond='data:post.hasNewerLinks'>
-      <a expr:href='data:post.newerLinkUrl'><data:messages.newer/></a>
-      <a expr:href='data:post.newestLinkUrl'><data:messages.newest/></a>
+      <a expr:href='data:post.newerLinkUrl'>
+        <data:messages.newer />
+      </a>
+      <a expr:href='data:post.newestLinkUrl'>
+        <data:messages.newest />
+      </a>
     </b:if>
   </div>
 </b:includable>
@@ -147,19 +156,19 @@ Comment item
       <div class='comment' expr:id='"c" + data:comment.id'>
         {{!-- Comment block --}}
         <div class='comment-block'>
-          <b:include name='comment:header'/>
-          <b:include name='comment:body'/>
-          <b:include cond='data:post.allowNewComments' name='comment:footer'/>
+          <b:include name='comment:header' />
+          <b:include name='comment:body' />
+          <b:include cond='data:post.allowNewComments' name='comment:footer' />
           {{!-- Replies --}}
           <b:if cond='data:hasDepth'>
             <b:with value='data:post.comments where (c => c.inReplyTo == data:comment.id)' var='replies'>
               {{!-- class 'comments-replies' is required for the script to work --}}
               <div class='comments-replies'>
                 <b:if cond='data:replies.any'>
-                  <b:class name='has-replies'/>
+                  <b:class name='has-replies' />
                   <b:loop expr:reverse='data:reverse' values='data:replies' var='reply'>
                     {{!-- Call comment item again --}}
-                    <b:include name='comment:item' data='reply'/>
+                    <b:include name='comment:item' data='reply' />
                   </b:loop>
                 </b:if>
               </div>
@@ -187,7 +196,7 @@ Comment build
         <b:if cond='data:comments.any'>
           <div class='comments-content'>
             <b:loop expr:reverse='data:reverse' values='data:comments' var='comment'>
-              <b:include name='comment:item' data='comment'/>
+              <b:include name='comment:item' data='comment' />
             </b:loop>
           </div>
         </b:if>
