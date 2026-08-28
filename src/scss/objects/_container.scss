@@ -2,7 +2,7 @@
 .container {
 
   &-slideshow {
-        display: grid;
+    display: grid;
 
     max-width: var(--slide-container, 1200px);
     margin: 0 auto;
@@ -33,10 +33,5 @@
     &.hide-both {
       grid-template-columns: 1fr;
     }
-
-    // Si se prefiere un enfoque con clases en los elementos hijos,
-    // también se puede usar la siguiente alternativa (comentada)
-    // pero la solución con clases en el contenedor es más limpia.
-    
   }
 }

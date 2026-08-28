@@ -5,7 +5,7 @@ const latestConfig = {
   maxResults: 150,                    // Máximo de posts a obtener
   initialDisplay: 3,                  // Posts mostrados al inicio
   batchSize: 5,                       // Posts añadidos al pulsar "Ver más"
-  blockedTags: [],                    // Etiquetas bloqueadas globalmente
+  blockedTags: ['novedades'],                    // Etiquetas bloqueadas globalmente
   selectorContainer: '.latest-posts',
   selectorCards: '.latest-cards',
   selectorMoreButton: '.latest-more',

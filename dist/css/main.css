@@ -286,6 +286,62 @@ a {
   gap: var(--form-gap);
 }
 
+.tns-nav,
+.tns-autoplay-button {
+  display: none !important;
+}
+
+/* Asegurar que el contenedor del slider sea relativo */
+.tns-outer {
+  position: relative;
+  /* Opcional: para que los botones no sobresalgan del borde */
+  overflow: visible;
+}
+
+/* Contenedor de los botones: ocupa todo el espacio y permite clics solo en botones */
+.tns-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Permite clics a través del contenedor */
+  z-index: 10;
+}
+
+/* Botones individuales: se posicionan a los lados y centrados verticalmente */
+.tns-controls button {
+  pointer-events: auto;
+  color: #fff;
+  cursor: pointer;
+  z-index: 11;
+  background: #071f7b;
+  border: 2px;
+  border-color: #fff;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 24px;
+  transition: background 0.3s;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Botón anterior a la izquierda */
+.tns-controls button[data-controls=prev] {
+  left: 10px;
+}
+
+/* Botón siguiente a la derecha */
+.tns-controls button[data-controls=next] {
+  right: 10px;
+}
+
+/* Efecto hover */
+.tns-controls button:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
 .posts-container {
   display: flex;
 }
@@ -319,13 +375,13 @@ a {
   height: 100%;
 }
 .card-meta {
-  padding: 3rem;
   background: var(--card-body-bg, transparent);
-  aspect-ratio: 2/3;
+  flex-direction: column-reverse;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
   position: relative;
+  align-items: center;
+  height: 25rem;
+  padding: 0.8rem;
 }
 .card-title {
   font-family: var(--font-title-family);
@@ -569,7 +625,7 @@ a {
 }
 
 /* Ajustes para que #content y #chapter-list se comporten bien */
-.main.has-chapter-list #content,
+.main.has-chapter-list .content,
 .main.has-chapter-list #chapter-list {
   min-width: 0;
   /* Evita desbordamientos */
@@ -588,13 +644,29 @@ a {
     gap: 20px;
   }
   /* Opcional: cambiar el orden para que content aparezca primero y luego chapter-list */
-  .main.has-chapter-list #content {
+  .main.has-chapter-list .content {
     order: 1;
   }
   .main.has-chapter-list #chapter-list {
     order: 2;
   }
 }
+#content-list .cards {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+#content-list .card {
+  width: 40rem;
+  max-width: 100%;
+}
+#content-list .card-meta {
+  height: 5rem;
+  padding: 1rem;
+  flex-direction: column;
+}
+
 .comments > * + * {
   margin-top: var(--comment-gap);
 }
@@ -665,6 +737,9 @@ a {
   background-color: var(--bg-footer);
   border-radius: 15px 15px 0 0;
   background: linear-gradient(125deg, rgb(0, 100, 220) 0%, rgb(50, 0, 100) 50%);
+}
+.footer .widget-title {
+  color: white;
 }
 
 .form-label {
@@ -793,12 +868,13 @@ a {
 }
 
 .pager-button {
-  color: var(--color-text);
-  display: flex;
+  color: white;
   align-items: center;
   gap: 0.5rem;
-  border: 1px solid var(--color-border);
   padding: 0.75rem;
+  display: flex;
+  background: var(--color-text);
+  border-radius: 14px;
 }
 .pager-button:hover {
   color: var(--primary);
@@ -1007,14 +1083,12 @@ a {
 }
 
 .links-link {
+  display: flex;
+  gap: 5px;
   margin: 0 0.2rem;
 }
 
-.links-social {
-  display: flex;
-}
-
-.links-social {
+.links {
   display: flex;
   justify-content: center;
 }
@@ -1023,6 +1097,20 @@ a {
   font-size: 0.75rem;
   color: white;
   margin-top: 1rem;
+}
+
+.content-toggle-title {
+  font-family: var(--font-blog-title);
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  transition: opacity 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.content-toggle-title:hover {
+  opacity: 0.7;
+  text-decoration: underline;
 }
 
 .text-left {

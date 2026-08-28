@@ -4,28 +4,25 @@ Partial: Main content
 --}}
 <main class='main'>
   <b:class cond='data:blog.pageType == "static_page"' name='has-chapter-list' />
-  
+
   <b:if cond='data:blog.url == data:blog.homepageUrl'>
+    {{!-- Homepage sections – images will use ratio 5:1 (via _postCard) --}}
     <b:section id='latest'>
       <b:widget type='PageList' locked='false' />
     </b:section>
-  </b:if>
-  <b:if cond='data:blog.url == data:blog.homepageUrl'>
     <b:section id='one-shot'>
       <b:widget type='PageList' locked='false' />
     </b:section>
-  </b:if>
-  <b:if cond='data:blog.url == data:blog.homepageUrl'>
     <b:section id='manga'>
       <b:widget type='PageList' locked='false' />
     </b:section>
-  </b:if>
-  <b:if cond='data:blog.url == data:blog.homepageUrl'>
     <b:section id='comic'>
       <b:widget type='PageList' locked='false' />
     </b:section>
   </b:if>
-  
+
+  <b:if cond='data:blog.url != data:blog.homepageUrl'>
+    {{!-- Non‑homepage content – images will use ratio 2:3 (via _postCard) --}}
     <b:section id='content'>
       <b:widget type='Blog' locked='false'>
         <b:includable id="postMetadataJSONImage">
@@ -33,15 +30,44 @@ Partial: Main content
             <b:if cond='data:image'>
               "image": {
               "@type": "ImageObject",
-              "url": "<b:eval expr='data:image' />",
-              "width": <b:eval expr='data:image.width' />,
-              "height": <b:eval expr='data:image.height' />
+              "url": "
+              <b:eval expr='data:image' />",
+              "width":
+              <b:eval expr='data:image.width' />,
+              "height":
+              <b:eval expr='data:image.height' />
               },
             </b:if>
           </b:with>
         </b:includable>
       </b:widget>
     </b:section>
+    <b:else />
+    {{!-- Homepage “Recent entries” – also uses ratio 5:1 (via _postCard) --}}
+    <details class='content-toggle'>
+      <summary class='content-toggle-title'> Todas las entradas recientes</summary>
+
+      <b:section id='content-list'>
+        <b:widget type='Blog' locked='false'>
+          <b:includable id="postMetadataJSONImage">
+            <b:with value='resizeImage(data:post.featuredImage, 1200, "1200:630")' var='image'>
+              <b:if cond='data:image'>
+                "image": {
+                "@type": "ImageObject",
+                "url": "
+                <b:eval expr='data:image' />",
+                "width":
+                <b:eval expr='data:image.width' />,
+                "height":
+                <b:eval expr='data:image.height' />
+                },
+              </b:if>
+            </b:with>
+          </b:includable>
+        </b:widget>
+      </b:section>
+    </details>
+  </b:if>
 
   <b:if cond='data:blog.pageType == "static_page"'>
     <b:section id='chapter-list'>

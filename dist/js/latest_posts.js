@@ -11,7 +11,7 @@
     // Posts mostrados al inicio
     batchSize: 5,
     // Posts añadidos al pulsar "Ver más"
-    blockedTags: [],
+    blockedTags: ['novedades'],
     // Etiquetas bloqueadas globalmente
     selectorContainer: '.latest-posts',
     selectorCards: '.latest-cards',

@@ -26,7 +26,8 @@
     "@zkreations/typography": "^1.0.1",
     "blogger-admin-wp": "^1.0.1",
     "hamlet": "^0.3.3",
-    "hamlet-builder": "^1.5.9"
+    "hamlet-builder": "^1.5.9",
+    "tiny-slider": "^2.9.4"
   },
   "theme": {
     "name": "Hamlet",
@@ -42,6 +43,8 @@
   ],
   "devDependencies": {
     "@antfu/eslint-config": "^9.1.0",
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "eslint": "^10.7.0",
     "rollup": "^4.62.4",
     "terser": "^5.50.0"

@@ -6,28 +6,33 @@ Module for head content
   <b:include name='@meta' data='{
       ogImage: data:skin.vars.c_ogImage,
       favicon: data:skin.vars.c_favicon
-    }'/>
-  <b:include name='@adsense'/>
-  <b:include data='blog' name='google-analytics'/>
+    }' />
+  <b:include name='@adsense' />
+  <b:include data='blog' name='google-analytics' />
 
   {{!-- Preconnect Resources --}}
-  <link href='https://fonts.bunny.net' rel='preconnect'/>
-  <link href='https://fonts.gstatic.com' rel='preconnect' crossorigin='crossorigin'/>
-  <link href='https://fonts.googleapis.com' rel='preconnect'/>
-  <link href='https://blogger.googleusercontent.com' rel='preconnect'/>
+  <link href='https://fonts.bunny.net' rel='preconnect' />
+  <link href='https://fonts.gstatic.com' rel='preconnect' crossorigin='crossorigin' />
+  <link href='https://fonts.googleapis.com' rel='preconnect' />
+  <link href='https://blogger.googleusercontent.com' rel='preconnect' />
 
   {{!-- Google Fonts: Bangers + Gajraj One --}}
-  <link href='https://fonts.googleapis.com/css2?family=Bangers&amp;family=Gajraj+One&amp;display=swap' rel='stylesheet'/>
+  <link href='https://fonts.googleapis.com/css2?family=Bangers&amp;family=Gajraj+One&amp;display=swap'
+    rel='stylesheet' />
 
   {{!-- Preload Fonts --}}
   <b:with value='"https://fonts.bunny.net/css" params { family: "open-sans:700,800", display: "swap" }' var='fonts'>
-    <link rel='preload' expr:href='data:fonts' as='style'/>
+    <link rel='preload' expr:href='data:fonts' as='style' />
     <link expr:href='data:fonts' rel='stylesheet' />
   </b:with>
+
+  {{!-- Tiny Slider --}}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
+  <!--[if (lt IE 9)]><script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.helper.ie8.js"></script><![endif]-->
 
   {{!-- Generate responsive image styles --}}
   <b:include cond='!data:view.isPreview' data='{
     selector: ".header",
     image: data:skin.vars.body_background.image
-  }' name='responsiveImageStyle'/>
+  }' name='responsiveImageStyle' />
 </b:includable>

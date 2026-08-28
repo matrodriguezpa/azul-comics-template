@@ -6,12 +6,13 @@
 }
 
 .pager-button {
-  color: var(--color-text);
-  display: flex;
+  color: white;
   align-items: center;
-  gap: 0.5rem;
-  border: 1px solid var(--color-border);
-  padding: 0.75rem;
+  gap: .5rem;
+  padding: .75rem;
+  display: flex;
+  background: var(--color-text);
+  border-radius: 14px;
 
   &:hover {
     color: var(--primary);

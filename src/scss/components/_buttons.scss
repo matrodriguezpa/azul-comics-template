@@ -4,3 +4,59 @@
   align-items: center;
   gap: var(--form-gap);
 }
+
+.tns-nav, 
+.tns-autoplay-button {
+    display: none !important;
+}
+
+/* Asegurar que el contenedor del slider sea relativo */
+.tns-outer {
+  position: relative;
+  /* Opcional: para que los botones no sobresalgan del borde */
+  overflow: visible;
+}
+
+/* Contenedor de los botones: ocupa todo el espacio y permite clics solo en botones */
+.tns-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Permite clics a través del contenedor */
+  z-index: 10;
+}
+
+/* Botones individuales: se posicionan a los lados y centrados verticalmente */
+.tns-controls button {
+  pointer-events: auto;
+  color: #fff;
+  cursor: pointer;
+  z-index: 11;
+  background: #071f7b;
+  border: 2px;
+  border-color: #fff;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 24px;
+  transition: background .3s;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Botón anterior a la izquierda */
+.tns-controls button[data-controls="prev"] {
+  left: 10px;
+}
+
+/* Botón siguiente a la derecha */
+.tns-controls button[data-controls="next"] {
+  right: 10px;
+}
+
+/* Efecto hover */
+.tns-controls button:hover {
+  background: rgba(0, 0, 0, 0.8);
+}

@@ -135,16 +135,12 @@
 }
 
 .links-link {
+  display: flex;
+  gap: 5px;
   margin: 0 .2rem;
 }
 
 .links {
-  &-social {
-    display: flex;
-  }
-}
-
-.links-social{
   display: flex;
   justify-content: center;
 }
@@ -153,4 +149,16 @@
   font-size: .75rem;
   color: white;
   margin-top: 1rem;
+}
+
+.content-toggle-title {
+  font-family: var(--font-blog-title);
+  cursor: pointer;
+  user-select: none;
+  transition: opacity .2s ease, text-decoration-color .2s ease;
+}
+
+.content-toggle-title:hover {
+  opacity: .7;
+  text-decoration: underline;
 }

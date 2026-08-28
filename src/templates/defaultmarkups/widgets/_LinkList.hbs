@@ -3,33 +3,45 @@ Content of the widget LinkList
 @author zkreations
 @see https://bloggercode.orbiona.com/2019/04/widget-linkList.html
 --}}
+
 <b:includable id='widget:LinkList'>
   <b:class cond='data:widget.sectionId == "header"' name='links-header' />
+
   <div class='header-links'>
-    <div class="links">
+
+    {{!--
+      LINKS
+      Los links salen de data:links, ya sea que vengan
+      predefinidos por la plantilla (via b:widget-settings)
+      o agregados a mano desde el editor de Blogger.
+
+      Si el nombre del link coincide con una red social
+      soportada, se muestra el icono junto al nombre.
+
+      El link llamado "placeholder" es ignorado.
+    --}}
+    <div class='links'>
       <b:loop values='data:links' var='link'>
-        <a class='links-link' expr:href='data:link.target'>
-          <data:link.name />
-        </a>
+          <a class='links-link'
+             expr:href='data:link.target'
+             target='_blank'
+             rel='noopener noreferrer'>
+
+            <b:switch var='data:link.name'>
+              <b:case value='Instagram' />
+              {{> Meteor.svg icon="instagram"}}
+              <b:case value='Facebook' />
+              {{> Meteor.svg icon="facebook"}}
+              <b:case value='Twitter' />
+              {{> Meteor.svg icon="twitter"}}
+              <b:case value='Discord' />
+              {{> Meteor.svg icon="discord"}}
+            </b:switch>
+
+            <data:link.name />
+          </a>
       </b:loop>
     </div>
 
-    <div class='links-social'>
-      <a class="links-link" href="https://www.instagram.com/azulcomics/" target="_blank">
-        {{> Meteor.svg icon="instagram"}}
-      </a>
-
-      <a class="links-link" href="https://www.facebook.com/azulcomics/" target="_blank">
-        {{> Meteor.svg icon="facebook"}}
-      </a>
-
-      <a class="links-link" href="https://twitter.com/azul_comics" target="_blank">
-        {{> Meteor.svg icon="twitter"}}
-      </a>
-
-      <a class="links-link" href="https://discord.com/invite/cPxcYRuxtc" target="_blank">
-        {{> Meteor.svg icon="discord"}}
-      </a>
-    </div>
   </div>
 </b:includable>

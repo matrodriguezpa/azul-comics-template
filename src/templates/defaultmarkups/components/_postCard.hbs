@@ -12,16 +12,30 @@ Module for creating a post card
           {{!-- Check if featured image is a YouTube video --}}
           <b:with value='data:post.featuredImage.isYoutube' var='isYoutube'>
             <b:class name='has-image'/>
-            <b:include name='@image' data='{
-              class: "card-image",
-              src: data:post.featuredImage,
-              resize: (data:isYoutube ? 300 : 210),
-              ratio: "2:3",
-              params: data:skin.vars.c_imageParams,
-              loading: (data:i gt 2 ? "lazy" : ""),
-              fetchpriority: (data:i lt 3 ? "high" : ""),
-              alt: data:post.title.escaped
-            }'/>
+            {{!-- Conditional ratio: 5:1 on homepage, 2:3 elsewhere --}}
+            <b:if cond='data:blog.url != data:blog.homepageUrl'>
+              <b:include name='@image' data='{
+                class: "card-image",
+                src: data:post.featuredImage,
+                resize: (data:isYoutube ? 300 : 240),
+                ratio: "2:3",
+                params: data:skin.vars.c_imageParams,
+                loading: (data:i gt 2 ? "lazy" : ""),
+                fetchpriority: (data:i lt 3 ? "high" : ""),
+                alt: data:post.title.escaped
+              }'/>
+            <b:else/>
+              <b:include name='@image' data='{
+                class: "card-image",
+                src: data:post.featuredImage,
+                resize: (data:isYoutube ? 300 : 800),
+                ratio: "5:1",
+                params: data:skin.vars.c_imageParams,
+                loading: (data:i gt 2 ? "lazy" : ""),
+                fetchpriority: (data:i lt 3 ? "high" : ""),
+                alt: data:post.title.escaped
+              }'/>
+            </b:if>
           </b:with>
         </b:if>
         <div class="card-meta card-search">

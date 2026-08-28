@@ -2,7 +2,7 @@
   display: flex;
 }
 
-// Container for the cards
+// Container for the cards (default: non-homepage)
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
@@ -12,8 +12,8 @@
 // Individual card
 .card {
   background-color: var(--bg-post);
-    border-radius: 15px;
-    overflow: hidden;
+  border-radius: 15px;
+  overflow: hidden;
 
   // Content of the card
   &-content {
@@ -37,13 +37,13 @@
   }
 
   &-meta {
-    padding: 3rem;
     background: var(--card-body-bg, transparent);
-    aspect-ratio: 2/3;
+    flex-direction: column-reverse; // Normal: column-reverse
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
     position: relative;
+    align-items: center;
+    height: 25rem; // Normal height
+    padding: .8rem; // Normal padding
   }
 
   &-title {
@@ -298,7 +298,7 @@
 }
 
 /* Ajustes para que #content y #chapter-list se comporten bien */
-.main.has-chapter-list #content,
+.main.has-chapter-list .content,
 .main.has-chapter-list #chapter-list {
   min-width: 0;
   /* Evita desbordamientos */
@@ -318,11 +318,32 @@
   }
 
   /* Opcional: cambiar el orden para que content aparezca primero y luego chapter-list */
-  .main.has-chapter-list #content {
+  .main.has-chapter-list .content {
     order: 1;
   }
 
   .main.has-chapter-list #chapter-list {
     order: 2;
+  }
+}
+
+// Homepage specific styles
+#content-list {
+  .cards {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .card {
+    width: 40rem;
+    max-width: 100%;
+  }
+
+  .card-meta {
+    height: 5rem;
+    padding: 1rem;
+    flex-direction: column; // override column-reverse
   }
 }
