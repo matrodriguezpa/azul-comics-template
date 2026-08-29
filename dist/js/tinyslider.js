@@ -3311,23 +3311,18 @@
 
     // Opcional: deshabilitar el control de autoplay completamente
     autoplayHoverPause: false,
-    autoplayButtonOutput: false
-    /*
-        responsive: {
-        640: {
-          items: 2,
-          gutter: 10
-        },
-        768: {
-          items: 3,
-          gutter: 20
-        },
-        1024: {
-          items: 4,
-          gutter: 30
-        }
+    autoplayButtonOutput: false,
+    responsive: {
+      0: {
+        items: 3
+      },
+      //768: {
+      //  items: 3
+      //},
+      1024: {
+        items: 4
       }
-    */
+    }
   });
 
 })();

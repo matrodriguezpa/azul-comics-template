@@ -29,6 +29,13 @@
       font-family: var(--font-title-family);
       color: var(--color-title);
     }
+
+    img {
+      border-radius: 15px;
+      @media screen and (max-width: 768px) {
+        display: none;
+      }
+    }
   }
 
   &-comment {

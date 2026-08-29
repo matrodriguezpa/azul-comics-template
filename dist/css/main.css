@@ -5,6 +5,7 @@
   --form-padding: .75rem 1rem;
   --form-gap: .75rem;
   --comment-gap: 2rem;
+  --header-height: 15vw;
   --sidebar-width: 15vw;
   --slide-container: 120vw;
   --main-container: 75vw;
@@ -238,6 +239,7 @@ body {
   font-family: var(--font-system);
   background-color: var(--bg-body);
   color: var(--color-text);
+  padding-top: var(--header-height);
 }
 
 a {
@@ -251,10 +253,16 @@ a {
   padding: 0 2rem;
   grid-template-columns: 1fr var(--card-width);
 }
+@media screen and (max-width: 1024px) {
+  .container-slideshow {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+}
 .container-main {
   display: grid;
   gap: var(--grid-gap, 1rem);
-  max-width: var(--main-container, 1200px);
+  max-width: var(--main-container, 70rem);
   margin: 0 auto;
   padding: 0 2rem;
   grid-template-columns: var(--sidebar-width) 1fr var(--sidebar-width);
@@ -267,6 +275,19 @@ a {
 }
 .container-main.hide-both {
   grid-template-columns: 1fr;
+}
+@media screen and (max-width: 1024px) {
+  .container-main {
+    max-width: unset;
+  }
+  .container-main.hide-left, .container-main.hide-right, .container-main.hide-both {
+    grid-template-columns: 1fr;
+  }
+}
+@media screen and (max-width: 0px) {
+  .container-main {
+    max-width: unset;
+  }
 }
 
 .template {
@@ -308,6 +329,11 @@ a {
   pointer-events: none; /* Permite clics a través del contenedor */
   z-index: 10;
 }
+@media screen and (max-width: 832px) {
+  .tns-controls {
+    display: none;
+  }
+}
 
 /* Botones individuales: se posicionan a los lados y centrados verticalmente */
 .tns-controls button {
@@ -348,7 +374,7 @@ a {
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8rem), 1fr));
   gap: 1rem;
 }
 
@@ -356,10 +382,19 @@ a {
   background-color: var(--bg-post);
   border-radius: 15px;
   overflow: hidden;
+  container-type: inline-size;
+}
+.card:hover {
+  transition: transform 0.3s ease, filter 0.3s ease;
+  transform: scale(1.05);
 }
 .card-content {
   position: relative;
   display: block;
+  aspect-ratio: 2/3;
+}
+.card-content.ratio-5-1 {
+  aspect-ratio: 5/1;
 }
 .card-content.has-image {
   --card-body-bg: linear-gradient(to bottom, transparent 25%, rgb(0 0 0 / 75%) 100%);
@@ -380,13 +415,13 @@ a {
   display: flex;
   position: relative;
   align-items: center;
-  height: 25rem;
-  padding: 0.8rem;
+  height: 100%;
+  padding: 0.6rem;
 }
 .card-title {
   font-family: var(--font-title-family);
   color: var(--color-title);
-  font-size: 1.45rem;
+  font-size: clamp(0.75rem, 7cqi, 1.45rem);
   font-weight: 800;
 }
 .card-snippet {
@@ -402,17 +437,29 @@ a {
   height: 28vw;
   overflow: hidden;
   transition: transform 0.3s ease, filter 0.3s ease;
+  height: -moz-max-content;
+  height: max-content;
+  scale: 0.95;
 }
 .card-slider:hover {
-  transform: scale(1.06);
+  transform: scale(1.05);
   filter: brightness(0.85);
 }
 .card-slider img {
-  width: 100%;
-  height: 100%;
-  display: block;
   -o-object-fit: cover;
      object-fit: cover;
+  width: 100%;
+  height: 35rem;
+}
+@media screen and (max-width: 1280px) {
+  .card-slider img {
+    height: 30rem;
+  }
+}
+@media screen and (max-width: 485px) {
+  .card-slider img {
+    height: 20rem;
+  }
 }
 .card-slide-title {
   position: absolute;
@@ -431,6 +478,26 @@ a {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
 }
+@media screen and (max-width: 1650px) {
+  .latest-cards {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+@media screen and (max-width: 1550px) {
+  .latest-cards {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+@media screen and (max-width: 1024px) {
+  .latest-cards {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+@media screen and (max-width: 339px) {
+  .latest-cards {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}
 
 /* Tarjeta individual */
 .latest-card {
@@ -439,6 +506,11 @@ a {
   border-radius: 8px;
   overflow: hidden;
   background: #fff;
+  transition: transform 0.2s;
+}
+
+.latest-card:hover {
+  transform: translateY(-4px);
 }
 
 /* Enlace superpuesto que cubre toda la tarjeta */
@@ -454,7 +526,6 @@ a {
 /* Imagen */
 .latest-card-image {
   width: 100%;
-  height: 150px;
   -o-object-fit: cover;
      object-fit: cover;
   display: block;
@@ -486,12 +557,18 @@ a {
   margin: 1rem auto;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  background-color: lightgray;
+  border-radius: 5px;
+  color: #747474;
+}
+
+.latest-more:hover {
+  background-color: #4b4b4b;
+  color: #ddd;
 }
 
 .latest-card-tags {
-  display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
@@ -515,7 +592,7 @@ a {
 }
 
 .chapter-cards {
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 20px;
   display: grid;
 }
@@ -617,9 +694,9 @@ a {
 /* === LAYOUT PARA PÁGINAS ESTÁTICAS === */
 .main.has-chapter-list {
   display: grid;
-  grid-template-columns: 25% 75%;
+  grid-template-columns: 24% 74%;
   /* Content a la izquierda, chapter-list a la derecha */
-  gap: 30px;
+  gap: 2%;
   align-items: start;
   /* Para que ambas columnas comiencen desde arriba */
 }
@@ -660,11 +737,6 @@ a {
 #content-list .card {
   width: 40rem;
   max-width: 100%;
-}
-#content-list .card-meta {
-  height: 5rem;
-  padding: 1rem;
-  flex-direction: column;
 }
 
 .comments > * + * {
@@ -738,8 +810,17 @@ a {
   border-radius: 15px 15px 0 0;
   background: linear-gradient(125deg, rgb(0, 100, 220) 0%, rgb(50, 0, 100) 50%);
 }
+@media screen and (max-width: 768px) {
+  .footer {
+    margin: 1rem 0;
+  }
+}
 .footer .widget-title {
   color: white;
+}
+.footer .LinkList {
+  margin-top: 1rem;
+  margin-bottom: 4rem;
 }
 
 .form-label {
@@ -759,35 +840,56 @@ a {
   border-color: var(--primary);
 }
 
-#header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+@media screen and (max-width: 970px) {
+  #header {
+    display: flex;
+    flex-direction: column;
+  }
+  #header .LinkList {
+    display: none;
+  }
 }
 
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
   background: var(--bg-header);
+  transition: transform 0.25s ease;
+}
+.header.header-hidden {
+  transform: translateY(-100%);
 }
 .header .section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0.5rem 3rem;
 }
-.header {
-  /*
-  .Header {
-    flex: 1;
-  }*/
+@media screen and (max-width: 970px) {
+  .header .section {
+    padding: 0;
+  }
 }
 .header .header-wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
+@media screen and (max-width: 970px) {
+  .header .header-wrapper {
+    align-items: center;
+  }
+}
 .header .header-title {
   margin: 0;
+  margin-top: 0.75rem;
   font-size: 1.75rem;
   line-height: 1;
   font-family: var(--font-blog-title);
-  margin-top: 0.75rem;
 }
 .header .header-title a {
   color: var(--color-header-title);
@@ -798,6 +900,14 @@ a {
   line-height: 1.2;
   color: var(--color-header-subtitle);
   font-family: var(--font-blog-title);
+}
+.header .header-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.header .place-right {
+  margin-left: auto;
 }
 .header .header-bars {
   left: 2rem;
@@ -813,40 +923,8 @@ a {
   pointer-events: var(--switch-search, none);
   opacity: var(--switch-search, 0);
 }
-.header .place-right {
-  margin-left: auto;
-}
-.header .header-links {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
 .header .google-auto-placed {
   display: none !important;
-}
-
-.halftone {
-  --stop1: .06rem;
-  --stop2: .65rem;
-  --dotColor: blue;
-  --bgColor: white;
-  --bgSize: 1.4rem;
-  --bgPosition: calc(var(--bgSize) / 2);
-  background: var(--bgColor);
-  filter: contrast(50);
-  mix-blend-mode: multiply;
-  isolation: isolate;
-}
-.halftone:after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle at center, var(--dotColor) var(--stop1), transparent var(--stop2)), radial-gradient(circle at center, var(--dotColor) var(--stop1), transparent var(--stop2));
-  background-size: var(--bgSize) var(--bgSize);
-  background-repeat: round;
-  background-position: 0 0, var(--bgPosition) var(--bgPosition);
-  -webkit-mask-image: linear-gradient(to right, black, transparent);
-          mask-image: linear-gradient(to right, black, transparent);
 }
 
 .i {
@@ -907,6 +985,14 @@ a {
 .post-body :where(h1, h2, h3, h4, h5, h6) {
   font-family: var(--font-title-family);
   color: var(--color-title);
+}
+.post-body img {
+  border-radius: 15px;
+}
+@media screen and (max-width: 768px) {
+  .post-body img {
+    display: none;
+  }
 }
 .post-comment {
   margin-top: 2rem;
@@ -1018,25 +1104,17 @@ a {
   width: 100%;
 }
 .labels-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   min-height: 40px;
-  box-sizing: border-box;
   padding: 0.65rem 0.8rem;
   background-color: #f1f1f1;
-  border: 0;
-  border-radius: 0;
+  border-radius: 5px;
   color: #444;
-  font-size: 0.75rem;
-  font-weight: 400;
-  text-transform: none;
-  text-decoration: none;
-  transition: background-color var(--transition-config), color var(--transition-config);
+  /*transition:
+    background-color var(--transition-config),
+    color var(--transition-config);*/
 }
 .labels-link:hover, .labels-link.is-here {
-  background-color: #e8e8e8;
-  border-color: transparent;
+  background-color: #bbb;
   color: var(--primary);
 }
 
@@ -1088,6 +1166,12 @@ a {
   margin: 0 0.2rem;
 }
 
+.links-link:hover {
+  opacity: 0.7;
+  -webkit-text-decoration: palegoldenrod;
+          text-decoration: palegoldenrod;
+}
+
 .links {
   display: flex;
   justify-content: center;
@@ -1111,6 +1195,21 @@ a {
 .content-toggle-title:hover {
   opacity: 0.7;
   text-decoration: underline;
+}
+
+#blogposts {
+  padding-left: 20px;
+}
+@media screen and (max-width: 1024px) {
+  #blogposts {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .widget-title {
+    text-align: center;
+  }
 }
 
 .text-left {

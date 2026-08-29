@@ -4,6 +4,8 @@
 const config = {
   verImagen: true,                 // ¿Agregar imagen a la tarjeta?
   sinImagen: 'https://drive.google.com/thumbnail?id=1URK0fkJycdOiKxmN8hHKelMbRLnkjOkM', // Imagen por defecto
+  imagenAncho: 400,
+  imagenAlto: 800,
   selectorContenedorTarjetas: '.posts-container', // Un contenedor por cada widget PageList
   selectorTarjeta: '.card-slider',                        // Cada tarjeta, ya generada por el theme
   selectorEnlaceTarjeta: '.pages-link'             // El <a> dentro de la tarjeta: da título y URL
@@ -16,25 +18,32 @@ const config = {
 async function cargarImagenesDeTarjetas() {
   const contenedores = document.querySelectorAll(config.selectorContenedorTarjetas);
 
-  if (contenedores.length === 0) return;
+  if (contenedores.length === 0 || !config.verImagen) return;
 
-  // Cada contenedor (cada widget) se procesa por separado
-  await Promise.all(Array.from(contenedores).map(procesarContenedorTarjetas));
+  // Descargamos el feed UNA sola vez para todos los sliders.
+  const paginas = await obtenerPaginasBlogger();
+
+  await Promise.all(
+    Array.from(contenedores).map(contenedor =>
+      procesarContenedorTarjetas(contenedor, paginas)
+    )
+  );
 }
 
 // ============================================================
 // PROCESA UN ÚNICO CONTENEDOR DE TARJETAS (un widget PageList)
 // ============================================================
-async function procesarContenedorTarjetas(contenedorTarjetas) {
-  // Evitar reprocesar el mismo contenedor si el script llega a ejecutarse
-  // más de una vez (hay un <script> por cada widget PageList en la página)
+async function procesarContenedorTarjetas(contenedorTarjetas, paginas) {
   if (contenedorTarjetas.dataset.cmcCargado === 'true') return;
   contenedorTarjetas.dataset.cmcCargado = 'true';
 
-  if (!config.verImagen) return; // nada que agregar si las imágenes están desactivadas
+  const tarjetas = Array.from(
+    contenedorTarjetas.querySelectorAll(config.selectorTarjeta)
+  );
 
-  const tarjetas = Array.from(contenedorTarjetas.querySelectorAll(config.selectorTarjeta));
-  await Promise.all(tarjetas.map(agregarImagenATarjeta));
+  await Promise.all(
+    tarjetas.map(tarjeta => agregarImagenATarjeta(tarjeta, paginas))
+  );
 }
 
 // ============================================================
@@ -42,66 +51,134 @@ async function procesarContenedorTarjetas(contenedorTarjetas) {
 // (el theme ya puso el <div class="card"> con su <a class="pages-link">
 // adentro; aquí solo le sumamos el <img>)
 // ============================================================
-async function agregarImagenATarjeta(tarjeta) {
+async function agregarImagenATarjeta(tarjeta, paginas) {
   const enlace = tarjeta.querySelector(config.selectorEnlaceTarjeta);
   if (!enlace || !enlace.href) return;
 
   let urlImagen = config.sinImagen;
-  try {
-    urlImagen = await obtenerImagenDePagina(enlace.href) || config.sinImagen;
-  } catch (error) {
-    console.error(`Error al obtener la imagen de "${enlace.href}":`, error);
+
+  const pagina = paginas.find(p =>
+    normalizarRuta(p.url) === normalizarRuta(enlace.href)
+  );
+
+  if (pagina?.imagen) {
+    urlImagen = optimizarImagen(pagina.imagen);
   }
 
+  // Evitar imágenes duplicadas
+  if (enlace.querySelector('.imagenportadacmc')) return;
+
   const img = document.createElement('img');
+
   img.className = 'imagenportadacmc';
   img.src = urlImagen;
   img.alt = enlace.textContent.trim();
+
+  // Mejora de rendimiento
+  img.loading = 'lazy';
+  img.decoding = 'async';
+
   enlace.appendChild(img);
 }
 
 // ============================================================
 // OBTENER LA PRIMERA IMAGEN DE UNA PÁGINA (vía fetch) — sin cambios
 // ============================================================
-async function obtenerImagenDePagina(url) {
+// ============================================================
+// OBTENER TODAS LAS PÁGINAS DE BLOGGER — UNA SOLA PETICIÓN
+// ============================================================
+async function obtenerPaginasBlogger() {
+  const feedUrl =
+    `${window.location.origin}/feeds/pages/default?alt=json&max-results=150`;
+
   try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+    const response = await fetch(feedUrl);
 
-    const html = await response.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-
-    // 1. Buscar meta og:image (prioridad)
-    const metaOg = doc.querySelector('meta[property="og:image"]');
-    if (metaOg && metaOg.content) {
-      return metaOg.content;
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
     }
 
-    // 2. Buscar la primera imagen del contenido
-    const selectoresImagen = [
-      'article img',
-      '.post-body img',
-      '.entry-content img',
-      '.content img',
-      'main img'
-    ];
-    for (const selector of selectoresImagen) {
-      const img = doc.querySelector(selector);
-      if (img && img.src) {
-        if (img.src.startsWith('http://') || img.src.startsWith('https://')) {
-          return img.src;
-        } else {
-          const baseUrl = new URL(url);
-          return new URL(img.src, baseUrl.origin).href;
+    const data = await response.json();
+    const entries = data.feed?.entry || [];
+
+    return entries.map(entry => {
+      const alternate = entry.link?.find(link => link.rel === 'alternate');
+
+      const contenido =
+        entry.content?.$t ||
+        entry.summary?.$t ||
+        '';
+
+      let imagen = null;
+
+      if (contenido) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(contenido, 'text/html');
+
+        // Primera imagen del contenido
+        const img = doc.querySelector('img');
+
+        if (img?.src) {
+          imagen = new URL(img.src, window.location.origin).href;
         }
       }
-    }
 
-    return null;
+      return {
+        url: alternate?.href || '',
+        imagen
+      };
+    });
+
   } catch (error) {
-    console.warn(`No se pudo obtener la imagen de ${url}:`, error);
-    return null;
+    console.error('No se pudieron obtener las páginas de Blogger:', error);
+    return [];
+  }
+}
+
+
+// ============================================================
+// NORMALIZAR URL PARA COMPARAR PÁGINAS
+// ============================================================
+function normalizarRuta(url) {
+  try {
+    const u = new URL(url);
+    return u.pathname.replace(/\/$/, '').toLowerCase();
+  } catch {
+    return '';
+  }
+}
+
+
+// ============================================================
+// OPTIMIZAR IMAGEN DE BLOGGER
+// Objetivo: aprox. 400 x 800 px (proporción 1:2)
+// ============================================================
+function optimizarImagen(url) {
+  if (!url) return config.sinImagen;
+
+  try {
+    const u = new URL(url);
+
+    u.pathname = u.pathname.replace(
+      /\/s\d+(?:-[^/]+)?\//i,
+      `/w${config.imagenAncho}-h${config.imagenAlto}/`
+    );
+
+    return u.href;
+  } catch {
+    return url;
+  }
+}
+
+function normalizarUrl(url) {
+  try {
+    const u = new URL(url);
+
+    // Quitamos parámetros y "/" final para poder comparar
+    // www.azulcomics.com/... con azulcomics.blogspot.com/...
+    return u.pathname.replace(/\/$/, '').toLowerCase();
+  } catch {
+    return url.toLowerCase();
   }
 }
 

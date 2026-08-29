@@ -5,7 +5,7 @@
 // Container for the cards (default: non-homepage)
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr));
   gap: 1rem;
 }
 
@@ -14,13 +14,23 @@
   background-color: var(--bg-post);
   border-radius: 15px;
   overflow: hidden;
+  container-type: inline-size; // habilita las unidades cqi del título más abajo
+
+  &:hover {
+    transition: transform 0.3s ease, filter 0.3s ease;
+    transform: scale(1.05);
+  }
 
   // Content of the card
   &-content {
     position: relative;
     display: block;
+    aspect-ratio: 2 / 3; // por defecto: todo lo que NO es homepage
 
-    // Style for the card if it has an image
+    &.ratio-5-1 {
+      aspect-ratio: 5 / 1; // homepage: banners horizontales
+    }
+
     &.has-image {
       --card-body-bg: linear-gradient(to bottom, transparent 25%, rgb(0 0 0 / 75%) 100%);
       --color-title: #fff;
@@ -38,18 +48,18 @@
 
   &-meta {
     background: var(--card-body-bg, transparent);
-    flex-direction: column-reverse; // Normal: column-reverse
+    flex-direction: column-reverse;
     display: flex;
     position: relative;
     align-items: center;
-    height: 25rem; // Normal height
-    padding: .8rem; // Normal padding
+    height: 100%; // antes: 25rem fijo → ahora llena el alto que ya define aspect-ratio
+    padding: .6rem;
   }
 
   &-title {
     font-family: var(--font-title-family);
     color: var(--color-title);
-    font-size: 1.45rem;
+    font-size: clamp(0.75rem, 7cqi, 1.45rem); // se achica junto con la tarjeta
     font-weight: 800;
   }
 
@@ -67,17 +77,28 @@
     height: 28vw;
     overflow: hidden;
     transition: transform 0.3s ease, filter 0.3s ease;
+    height: max-content;
+    scale: .95;
 
     &:hover {
-      transform: scale(1.06);
+      transform: scale(1.05);
       filter: brightness(0.85);
     }
 
     img {
-      width: 100%;
-      height: 100%;
-      display: block;
       object-fit: cover;
+      //aspect-ratio: 1/1.5;
+      width: 100%;
+      height: 35rem;
+      //display: block;
+
+      @media screen and (max-width: 1280px) {
+        height: 30rem;
+      }
+
+      @media screen and (max-width: 485px) {
+        height: 20rem;
+      }
     }
   }
 
@@ -101,6 +122,22 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
+
+  @media screen and (max-width: 1650px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  @media screen and (max-width: 1550px) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+
+  @media screen and (max-width: 1024px) {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  @media screen and (max-width: 339px) {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
 }
 
 /* Tarjeta individual */
@@ -110,6 +147,11 @@
   border-radius: 8px;
   overflow: hidden;
   background: #fff;
+  transition: transform 0.2s;
+}
+
+.latest-card:hover {
+  transform: translateY(-4px);
 }
 
 /* Enlace superpuesto que cubre toda la tarjeta */
@@ -125,7 +167,7 @@
 /* Imagen */
 .latest-card-image {
   width: 100%;
-  height: 150px;
+  //height: 150px;
   object-fit: cover;
   display: block;
 }
@@ -156,12 +198,21 @@
   margin: 1rem auto;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  background-color: lightgray;
+  border-radius: 5px;
+  color: #747474;
 }
 
+.latest-more:hover {
+  background-color: #4b4b4b;
+  color: #ddd
+}
+
+
 .latest-card-tags {
-  display: flex;
+  //display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  //gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
@@ -187,7 +238,7 @@
 .chapter-list {}
 
 .chapter-cards {
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 20px;
   display: grid;
 }
@@ -290,9 +341,9 @@
 /* === LAYOUT PARA PÁGINAS ESTÁTICAS === */
 .main.has-chapter-list {
   display: grid;
-  grid-template-columns: 25% 75%;
+  grid-template-columns: 24% 74%;
   /* Content a la izquierda, chapter-list a la derecha */
-  gap: 30px;
+  gap: 2%;
   align-items: start;
   /* Para que ambas columnas comiencen desde arriba */
 }
@@ -339,11 +390,5 @@
   .card {
     width: 40rem;
     max-width: 100%;
-  }
-
-  .card-meta {
-    height: 5rem;
-    padding: 1rem;
-    flex-direction: column; // override column-reverse
   }
 }

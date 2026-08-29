@@ -26,6 +26,10 @@
   height: 100%;
   pointer-events: none; /* Permite clics a través del contenedor */
   z-index: 10;
+  
+  @media screen and (max-width: 832px) {
+    display: none;
+  }
 }
 
 /* Botones individuales: se posicionan a los lados y centrados verticalmente */

@@ -1,34 +1,58 @@
 #header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @media screen and (max-width: 970px) {
+    display: flex;
+    flex-direction: column;
+
+    .LinkList {
+      display: none;
+    }
+  }
 }
 
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+
   background: var(--bg-header);
 
-  .section {
-    padding: 0.5rem 3rem;
+  transition: transform 0.25s ease;
+
+
+
+  &.header-hidden {
+    transform: translateY(-100%);
   }
 
-  // Widget Header
-  /*
-  .Header {
-    flex: 1;
-  }*/
+  .section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 3rem;
+
+    @media screen and (max-width: 970px) {
+      padding: 0;
+    }
+  }
 
   .header-wrapper {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    @media screen and (max-width: 970px) {
+      align-items: center;
+    }
   }
 
   .header-title {
     margin: 0;
+    margin-top: 0.75rem;
     font-size: 1.75rem;
     line-height: 1;
     font-family: var(--font-blog-title);
-    margin-top: .75rem;
 
     a {
       color: var(--color-header-title);
@@ -43,7 +67,16 @@
     font-family: var(--font-blog-title);
   }
 
-  // Menú
+  .header-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .place-right {
+    margin-left: auto;
+  }
+
   .header-bars {
     left: 2rem;
 
@@ -53,7 +86,6 @@
     }
   }
 
-  // Buscador
   .header-search {
     right: 2rem;
 
@@ -63,44 +95,7 @@
     }
   }
 
-  .place-right {
-    margin-left: auto;
-  }
-
-  .header-links {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  // No auto ads
   .google-auto-placed {
     display: none !important;
-  }
-}
-
-.halftone {
-  --stop1: .06rem;
-  --stop2: .65rem;
-  --dotColor: blue;
-  --bgColor: white;
-  --bgSize: 1.4rem;
-  --bgPosition: calc(var(--bgSize) / 2);
-  background: var(--bgColor);
-  filter: contrast(50);
-  mix-blend-mode: multiply;
-  isolation: isolate;
-
-  &:after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at center, var(--dotColor) var(--stop1), transparent var(--stop2)),
-      radial-gradient(circle at center, var(--dotColor) var(--stop1), transparent var(--stop2));
-    background-size: var(--bgSize) var(--bgSize);
-    background-repeat: round;
-    background-position: 0 0, var(--bgPosition) var(--bgPosition);
-    mask-image: linear-gradient(to right, black, transparent);
   }
 }

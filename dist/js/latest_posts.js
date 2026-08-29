@@ -7,16 +7,19 @@
   const latestConfig = {
     maxResults: 150,
     // Máximo de posts a obtener
-    initialDisplay: 3,
+    initialDisplay: 4,
     // Posts mostrados al inicio
-    batchSize: 5,
+    batchSize: 4,
     // Posts añadidos al pulsar "Ver más"
     blockedTags: ['novedades'],
     // Etiquetas bloqueadas globalmente
     selectorContainer: '.latest-posts',
     selectorCards: '.latest-cards',
     selectorMoreButton: '.latest-more',
-    imagePlaceholder: 'https://via.placeholder.com/400x200?text=Sin+Imagen'
+    imagePlaceholder: 'https://via.placeholder.com/400x200?text=Sin+Imagen',
+    imagenAncho: 400,
+    // Ancho deseado para las imágenes (px)
+    imagenAlto: 700 // Alto deseado para las imágenes (px)
   };
 
   // ============================================================
@@ -25,13 +28,33 @@
   async function initLatestPosts() {
     const containers = Array.from(document.querySelectorAll(latestConfig.selectorContainer));
     if (containers.length === 0) return;
-    await Promise.all(containers.map(processContainer));
+
+    // El feed se descarga UNA sola vez para todos los widgets de la página
+    // (misma idea que obtenerPaginasBlogger() en slideshow.bundle.js)
+    const entries = await fetchPostsFeed();
+    await Promise.all(containers.map(container => processContainer(container, entries)));
+  }
+
+  // ============================================================
+  // OBTENER EL FEED DE POSTS (una sola petición para toda la página)
+  // ============================================================
+  async function fetchPostsFeed() {
+    const feedUrl = `${window.location.origin}/feeds/posts/default?alt=json&max-results=${latestConfig.maxResults}&orderby=published&thumbs=1`;
+    try {
+      const response = await fetch(feedUrl);
+      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+      const data = await response.json();
+      return data.feed.entry || [];
+    } catch (error) {
+      console.error('Error al obtener el feed de posts:', error);
+      return null; // null = error real, distinto de "sin resultados"
+    }
   }
 
   // ============================================================
   // PROCESA UN CONTENEDOR
   // ============================================================
-  async function processContainer(container) {
+  async function processContainer(container, entries) {
     if (container.dataset.latestLoaded === 'true') return;
     container.dataset.latestLoaded = 'true';
 
@@ -40,7 +63,11 @@
     // Si el id de la sección es 'latest' o no existe, no se filtra por categoría
     const category = section && section.id && section.id.toLowerCase() !== 'latest' ? section.id : null;
     try {
-      const posts = await fetchAndFilterPosts(category);
+      if (entries === null) {
+        container.innerHTML = '<p>Error al cargar las publicaciones.</p>';
+        return;
+      }
+      const posts = filterPosts(entries, category);
       if (posts.length === 0) {
         container.innerHTML = '<p>No hay publicaciones disponibles.</p>';
         return;
@@ -57,50 +84,34 @@
       // Limpiar contenido previo (evita duplicados al recargar)
       cardsContainer.innerHTML = '';
 
-      // Función para renderizar el siguiente lote
-      function renderNext() {
-        const endIndex = Math.min(state.currentIndex + latestConfig.initialDisplay, state.posts.length);
+      // Renderiza un lote de tarjetas usando un fragmento (minimiza reflows)
+      function renderBatch(count) {
+        const endIndex = Math.min(state.currentIndex + count, state.posts.length);
         const postsToShow = state.posts.slice(state.currentIndex, endIndex);
         state.currentIndex = endIndex;
-        postsToShow.forEach(post => {
-          const card = createCard(post);
-          cardsContainer.appendChild(card);
-        });
-        updateButtonVisibility(moreButton, state);
-      }
-
-      // Función para cargar más al hacer clic
-      function loadMore() {
-        const endIndex = Math.min(state.currentIndex + latestConfig.batchSize, state.posts.length);
-        const postsToShow = state.posts.slice(state.currentIndex, endIndex);
-        state.currentIndex = endIndex;
-        postsToShow.forEach(post => {
-          const card = createCard(post);
-          cardsContainer.appendChild(card);
-        });
+        const fragment = document.createDocumentFragment();
+        postsToShow.forEach(post => fragment.appendChild(createCard(post)));
+        cardsContainer.appendChild(fragment);
         updateButtonVisibility(moreButton, state);
       }
 
       // Render inicial
-      renderNext();
+      renderBatch(latestConfig.initialDisplay);
 
       // Evento del botón "Ver más"
-      moreButton.addEventListener('click', loadMore);
+      if (moreButton) {
+        moreButton.addEventListener('click', () => renderBatch(latestConfig.batchSize));
+      }
     } catch (error) {
-      console.error('Error al cargar los posts:', error);
+      console.error('Error al procesar el contenedor de posts:', error);
       container.innerHTML = '<p>Error al cargar las publicaciones.</p>';
     }
   }
 
   // ============================================================
-  // OBTENER Y FILTRAR POSTS DESDE EL FEED
+  // FILTRAR POSTS (sin red: solo procesa lo ya descargado en fetchPostsFeed)
   // ============================================================
-  async function fetchAndFilterPosts(category) {
-    const feedUrl = `${window.location.origin}/feeds/posts/default?alt=json&max-results=${latestConfig.maxResults}&orderby=published&thumbs=1`;
-    const response = await fetch(feedUrl);
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-    const data = await response.json();
-    const entries = data.feed.entry || [];
+  function filterPosts(entries, category) {
     const blockedSet = new Set(latestConfig.blockedTags);
     const filtered = [];
     for (const entry of entries) {
@@ -125,12 +136,7 @@
   function createCard(post) {
     const postUrl = getPostUrl(post);
     const title = post.title.$t;
-
-    // Obtener miniatura del feed
-    let thumbnail = latestConfig.imagePlaceholder;
-    if (post.media$thumbnail) {
-      thumbnail = post.media$thumbnail.url.replace(/s72-c/, 's400');
-    }
+    const thumbnail = obtenerImagenPost(post);
 
     // Obtener todas las etiquetas
     const allTags = post.category ? post.category.map(cat => cat.term) : [];
@@ -150,11 +156,8 @@
     image.src = thumbnail;
     image.alt = title;
     image.className = 'latest-card-image';
-
-    // Si la imagen es el placeholder, intentar obtener la real desde la página
-    if (thumbnail === latestConfig.imagePlaceholder && postUrl && postUrl !== '#') {
-      fetchRealImage(postUrl, image);
-    }
+    image.loading = 'lazy'; // Carga diferida (igual que en slideshow)
+    image.decoding = 'async'; // Decodificación fuera del hilo principal
 
     // Título
     const titleElement = document.createElement('h3');
@@ -181,15 +184,54 @@
   }
 
   // ============================================================
+  // OBTENER LA IMAGEN DE UN POST SIN PETICIONES DE RED ADICIONALES
+  // 1. Miniatura que ya trae el feed (media$thumbnail)
+  // 2. Primera <img> dentro del contenido del post (también viene en el feed)
+  // 3. Placeholder
+  // ============================================================
+  function obtenerImagenPost(post) {
+    if (post.media$thumbnail && post.media$thumbnail.url) {
+      return optimizarImagen(post.media$thumbnail.url);
+    }
+    const contenido = post.content && post.content.$t || post.summary && post.summary.$t || '';
+    if (contenido) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(contenido, 'text/html');
+      const img = doc.querySelector('img');
+      if (img && img.src) {
+        try {
+          const url = new URL(img.src, window.location.origin).href;
+          return optimizarImagen(url);
+        } catch {
+          // si la URL no es válida, cae al placeholder
+        }
+      }
+    }
+    return latestConfig.imagePlaceholder;
+  }
+
+  // ============================================================
+  // REDIMENSIONAR IMAGEN DE BLOGGER SEGÚN LOS VALORES DE CONFIG
+  // (misma técnica que optimizarImagen() en slideshow.bundle.js)
+  // Ajusta latestConfig.imagenAncho / latestConfig.imagenAlto para cambiar el tamaño
+  // ============================================================
+  function optimizarImagen(url) {
+    if (!url) return latestConfig.imagePlaceholder;
+    try {
+      const u = new URL(url);
+      u.pathname = u.pathname.replace(/\/s\d+(?:-[^/]+)?\//i, `/w${latestConfig.imagenAncho}-h${latestConfig.imagenAlto}/`);
+      return u.href;
+    } catch {
+      return url;
+    }
+  }
+
+  // ============================================================
   // ACTUALIZAR VISIBILIDAD DEL BOTÓN "VER MÁS"
   // ============================================================
   function updateButtonVisibility(button, state) {
     if (!button) return;
-    if (state.currentIndex >= state.posts.length) {
-      button.style.display = 'none';
-    } else {
-      button.style.display = '';
-    }
+    button.style.display = state.currentIndex >= state.posts.length ? 'none' : '';
   }
 
   // ============================================================
@@ -198,58 +240,6 @@
   function getPostUrl(entry) {
     const link = entry.link.find(l => l.rel === 'alternate');
     return link ? link.href : '#';
-  }
-
-  // ============================================================
-  // OBTENER IMAGEN REAL DESDE LA PÁGINA (igual que en slideshow)
-  // ============================================================
-  async function obtenerImagenDePagina(url) {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-      const html = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-
-      // 1. Buscar meta og:image (prioridad)
-      const metaOg = doc.querySelector('meta[property="og:image"]');
-      if (metaOg && metaOg.content) {
-        return metaOg.content;
-      }
-
-      // 2. Buscar la primera imagen del contenido
-      const selectoresImagen = ['article img', '.post-body img', '.entry-content img', '.content img', 'main img'];
-      for (const selector of selectoresImagen) {
-        const img = doc.querySelector(selector);
-        if (img && img.src) {
-          if (img.src.startsWith('http://') || img.src.startsWith('https://')) {
-            return img.src;
-          } else {
-            const baseUrl = new URL(url);
-            return new URL(img.src, baseUrl.origin).href;
-          }
-        }
-      }
-      return null;
-    } catch (error) {
-      console.warn(`No se pudo obtener la imagen de ${url}:`, error);
-      return null;
-    }
-  }
-
-  // ============================================================
-  // ACTUALIZAR IMAGEN DE LA TARJETA CUANDO SE OBTIENE LA REAL
-  // ============================================================
-  async function fetchRealImage(postUrl, imgElement) {
-    try {
-      const realImage = await obtenerImagenDePagina(postUrl);
-      if (realImage) {
-        imgElement.src = realImage;
-      }
-    } catch (error) {
-      // Si falla, se queda con el placeholder
-      console.debug('Imagen no encontrada para', postUrl);
-    }
   }
 
   // ============================================================

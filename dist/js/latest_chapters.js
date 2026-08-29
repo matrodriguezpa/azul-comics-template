@@ -24,7 +24,10 @@ var latest_chapters = (function () {
 	    selectorFirstButton: '.chapter-first',
 	    selectorLatestButton: '.chapter-latest',
 	    selectorSortButton: '.chapter-sort',
-	    imagePlaceholder: 'https://via.placeholder.com/400x200?text=Sin+Imagen'
+	    imagePlaceholder: 'https://via.placeholder.com/400x200?text=Sin+Imagen',
+	    imagenAncho: 504,
+	    // Ancho deseado para las imágenes (px)
+	    imagenAlto: 896 // Alto deseado para las imágenes (px)
 	  };
 
 	  // ============================================================
@@ -142,14 +145,12 @@ var latest_chapters = (function () {
 
 	        // Construir flatItems: primero los uncategorized (sin encabezado), luego las secciones con encabezado
 	        const flat = [];
-	        // Añadir posts sin sección
 	        uncategorized.forEach(post => {
 	          flat.push({
 	            type: 'post',
 	            data: post
 	          });
 	        });
-	        // Añadir secciones
 	        sections.forEach(section => {
 	          flat.push({
 	            type: 'header',
@@ -170,10 +171,7 @@ var latest_chapters = (function () {
 	      function createChapterCard(post) {
 	        const postUrl = getPostUrl(post);
 	        const title = post.title.$t;
-	        let thumbnail = chapterConfig.imagePlaceholder;
-	        if (post.media$thumbnail) {
-	          thumbnail = post.media$thumbnail.url.replace(/s72-c/, 's400');
-	        }
+	        const thumbnail = obtenerImagenPost(post);
 	        const card = document.createElement('div');
 	        card.className = 'chapter-card';
 	        const link = document.createElement('a');
@@ -185,9 +183,7 @@ var latest_chapters = (function () {
 	        image.alt = title;
 	        image.className = 'chapter-card-image';
 	        image.loading = 'lazy';
-	        if (thumbnail === chapterConfig.imagePlaceholder && postUrl && postUrl !== '#') {
-	          fetchRealImage(postUrl, image);
-	        }
+	        image.decoding = 'async';
 	        const titleElement = document.createElement('h3');
 	        titleElement.className = 'chapter-card-title';
 	        titleElement.textContent = title;
@@ -196,22 +192,25 @@ var latest_chapters = (function () {
 	        card.appendChild(link);
 	        return card;
 	      }
-	      function renderNext() {
+
+	      // Renderiza un lote de "count" elementos usando un fragmento (minimiza reflows)
+	      function renderBatch(count) {
 	        const flat = state.flatItems;
-	        const endIndex = Math.min(state.currentIndex + chapterConfig.initialDisplay, flat.length);
+	        const endIndex = Math.min(state.currentIndex + count, flat.length);
 	        const itemsToShow = flat.slice(state.currentIndex, endIndex);
 	        state.currentIndex = endIndex;
+	        const fragment = document.createDocumentFragment();
 	        itemsToShow.forEach(item => {
 	          if (item.type === 'header') {
 	            const header = document.createElement('div');
 	            header.className = 'chapter-section-header';
 	            header.textContent = `${item.data.number}. ${item.data.name}`;
-	            cardsContainer.appendChild(header);
+	            fragment.appendChild(header);
 	          } else {
-	            const card = createChapterCard(item.data);
-	            cardsContainer.appendChild(card);
+	            fragment.appendChild(createChapterCard(item.data));
 	          }
 	        });
+	        cardsContainer.appendChild(fragment);
 	        updateButtonVisibility(moreButton, state, flat.length);
 	      }
 
@@ -219,20 +218,13 @@ var latest_chapters = (function () {
 
 	      function updateButtonVisibility(button, state, total) {
 	        if (!button) return;
-	        if (state.currentIndex >= total) {
-	          button.style.display = 'none';
-	        } else {
-	          button.style.display = '';
-	        }
-	      }
-	      function loadMore() {
-	        renderNext();
+	        button.style.display = state.currentIndex >= total ? 'none' : '';
 	      }
 	      function refreshView() {
 	        state.flatItems = buildFlatItems();
 	        state.currentIndex = 0;
 	        cardsContainer.innerHTML = '';
-	        renderNext();
+	        renderBatch(chapterConfig.initialDisplay);
 	        sortButton.textContent = state.sortOrder === 'desc' ? 'Orden: más recientes' : 'Orden: primeros';
 	      }
 
@@ -254,8 +246,8 @@ var latest_chapters = (function () {
 	      // ============ INICIALIZACIÓN ============
 
 	      state.flatItems = buildFlatItems();
-	      renderNext();
-	      moreButton.addEventListener('click', loadMore);
+	      renderBatch(chapterConfig.initialDisplay);
+	      moreButton.addEventListener('click', () => renderBatch(chapterConfig.batchSize));
 	      container._chapterState = state;
 	    } catch (error) {
 	      console.error('Error al cargar los capítulos:', error);
@@ -264,7 +256,7 @@ var latest_chapters = (function () {
 	  }
 
 	  // ============================================================
-	  // FUNCIONES AUXILIARES (sin cambios)
+	  // FUNCIONES AUXILIARES
 	  // ============================================================
 
 	  function getTagFromStaticPage() {
@@ -289,43 +281,47 @@ var latest_chapters = (function () {
 	    const link = entry.link.find(l => l.rel === 'alternate');
 	    return link ? link.href : '#';
 	  }
-	  async function obtenerImagenDePagina(url) {
-	    try {
-	      const response = await fetch(url);
-	      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-	      const html = await response.text();
+
+	  // ============================================================
+	  // OBTENER LA IMAGEN DE UN POST SIN PETICIONES DE RED ADICIONALES
+	  // 1. Miniatura que ya trae el feed (media$thumbnail)
+	  // 2. Primera <img> dentro del contenido del post (también viene en el feed)
+	  // 3. Placeholder
+	  // ============================================================
+	  function obtenerImagenPost(post) {
+	    if (post.media$thumbnail && post.media$thumbnail.url) {
+	      return optimizarImagen(post.media$thumbnail.url);
+	    }
+	    const contenido = post.content && post.content.$t || post.summary && post.summary.$t || '';
+	    if (contenido) {
 	      const parser = new DOMParser();
-	      const doc = parser.parseFromString(html, 'text/html');
-	      const metaOg = doc.querySelector('meta[property="og:image"]');
-	      if (metaOg && metaOg.content) {
-	        return metaOg.content;
-	      }
-	      const selectoresImagen = ['article img', '.post-body img', '.entry-content img', '.content img', 'main img'];
-	      for (const selector of selectoresImagen) {
-	        const img = doc.querySelector(selector);
-	        if (img && img.src) {
-	          if (img.src.startsWith('http://') || img.src.startsWith('https://')) {
-	            return img.src;
-	          } else {
-	            const baseUrl = new URL(url);
-	            return new URL(img.src, baseUrl.origin).href;
-	          }
+	      const doc = parser.parseFromString(contenido, 'text/html');
+	      const img = doc.querySelector('img');
+	      if (img && img.src) {
+	        try {
+	          const url = new URL(img.src, window.location.origin).href;
+	          return optimizarImagen(url);
+	        } catch {
+	          // si la URL no es válida, cae al placeholder
 	        }
 	      }
-	      return null;
-	    } catch (error) {
-	      console.warn(`No se pudo obtener la imagen de ${url}:`, error);
-	      return null;
 	    }
+	    return chapterConfig.imagePlaceholder;
 	  }
-	  async function fetchRealImage(postUrl, imgElement) {
+
+	  // ============================================================
+	  // REDIMENSIONAR IMAGEN DE BLOGGER SEGÚN LOS VALORES DE CONFIG
+	  // (misma técnica que optimizarImagen() en slideshow.bundle.js)
+	  // Ajusta chapterConfig.imagenAncho / chapterConfig.imagenAlto para cambiar el tamaño
+	  // ============================================================
+	  function optimizarImagen(url) {
+	    if (!url) return chapterConfig.imagePlaceholder;
 	    try {
-	      const realImage = await obtenerImagenDePagina(postUrl);
-	      if (realImage) {
-	        imgElement.src = realImage;
-	      }
-	    } catch (error) {
-	      console.debug('Imagen no encontrada para', postUrl);
+	      const u = new URL(url);
+	      u.pathname = u.pathname.replace(/\/s\d+(?:-[^/]+)?\//i, `/w${chapterConfig.imagenAncho}-h${chapterConfig.imagenAlto}/`);
+	      return u.href;
+	    } catch {
+	      return url;
 	    }
 	  }
 
